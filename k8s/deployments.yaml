@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: traefik-ingress-controller
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: traefik
+  labels:
+    app: traefik
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      nodeSelector:
+        role: primary
+      containers:
+        - name: traefik
+          image: traefik:v2.2
+          args:
+            - --accesslog
+            - --entrypoints.websecure.Address=:443
+            - --providers.kubernetescrd
+          ports:
+            - name: websecure
+              containerPort: 443
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: nginx-deployment
+  labels:
+    app: nginx-deployment
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment
+    spec:
+      nodeSelector:
+        role: worker
+      containers:
+        - name: nginx-deployment
+          image: nginx:1.14.2
+          ports:
+            - name: web
+              containerPort: 80

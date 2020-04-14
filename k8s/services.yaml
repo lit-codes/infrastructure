@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+
+spec:
+  externalIPs:
+  - 178.128.106.70
+  ports:
+    - protocol: TCP
+      name: websecure
+      port: 443
+  selector:
+    app: traefik
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deployment
+
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+  selector:
+    app: nginx-deployment
