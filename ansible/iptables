@@ -6,3 +6,5 @@
 -A INPUT -i lo -j ACCEPT
 -A INPUT -s 10.0.0.0/8 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 6443 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 51820 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 6444 -j ACCEPT

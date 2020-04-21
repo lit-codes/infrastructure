@@ -1,16 +1,34 @@
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: testwebsite
+  name: dev-wp
   namespace: default
 spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`test.lit.codes`)
+  - match: Host(`dev-wp.lit.codes`)
     kind: Rule
     services:
-    - name: nginx-deployment
+    - name: dev-wp-wordpress
+      port: 80
+  tls:
+    secretName: cloudflarecrtsecret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: wp
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`wp.lit.codes`)
+    kind: Rule
+    services:
+    - name: wp-wordpress
       port: 80
   tls:
     secretName: cloudflarecrtsecret

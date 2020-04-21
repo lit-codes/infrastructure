@@ -1,0 +1,735 @@
+NAME:   ken-wp
+REVISION: 1
+RELEASED: Thu Apr 16 20:36:07 2020
+CHART: wordpress-7.6.8
+USER-SUPPLIED VALUES:
+nodeSelector:
+  role: primary
+service:
+  type: ClusterIP
+
+COMPUTED VALUES:
+affinity: {}
+allowEmptyPassword: true
+allowOverrideNone: false
+customHTAccessCM: null
+externalDatabase:
+  database: bitnami_wordpress
+  host: localhost
+  password: ""
+  port: 3306
+  user: bn_wordpress
+extraEnv: []
+extraVolumeMounts: []
+extraVolumes: []
+healthcheckHttps: false
+image:
+  pullPolicy: IfNotPresent
+  registry: docker.io
+  repository: bitnami/wordpress
+  tag: 5.2.4-debian-9-r18
+ingress:
+  annotations: {}
+  certManager: false
+  enabled: false
+  hostname: wordpress.local
+  secrets: null
+livenessProbe:
+  failureThreshold: 6
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
+mariadb:
+  db:
+    forcePassword: false
+    name: bitnami_wordpress
+    user: bn_wordpress
+  enabled: true
+  global: {}
+  image:
+    debug: false
+    pullPolicy: IfNotPresent
+    registry: docker.io
+    repository: bitnami/mariadb
+    tag: 10.3.18-debian-9-r36
+  master:
+    affinity: {}
+    antiAffinity: soft
+    config: |-
+      [mysqld]
+      skip-name-resolve
+      explicit_defaults_for_timestamp
+      basedir=/opt/bitnami/mariadb
+      plugin_dir=/opt/bitnami/mariadb/plugin
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      tmpdir=/opt/bitnami/mariadb/tmp
+      max_allowed_packet=16M
+      bind-address=0.0.0.0
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+      log-error=/opt/bitnami/mariadb/logs/mysqld.log
+      character-set-server=UTF8
+      collation-server=utf8_general_ci
+
+      [client]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      default-character-set=UTF8
+      plugin_dir=/opt/bitnami/mariadb/plugin
+
+      [manager]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+    extraInitContainers: ""
+    livenessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    nodeSelector: {}
+    persistence:
+      accessMode: ReadWriteOnce
+      accessModes:
+      - ReadWriteOnce
+      annotations: {}
+      enabled: true
+      mountPath: /bitnami/mariadb
+      size: 8Gi
+    podDisruptionBudget:
+      enabled: false
+      minAvailable: 1
+    readinessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    service:
+      annotations: {}
+    tolerations: []
+    updateStrategy:
+      type: RollingUpdate
+  metrics:
+    annotations:
+      prometheus.io/port: "9104"
+      prometheus.io/scrape: "true"
+    enabled: false
+    extraArgs:
+      master: []
+      slave: []
+    image:
+      pullPolicy: IfNotPresent
+      registry: docker.io
+      repository: bitnami/mysqld-exporter
+      tag: 0.12.1-debian-9-r75
+    livenessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    readinessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    serviceMonitor:
+      enabled: false
+      selector:
+        prometheus: kube-prometheus
+  rbac:
+    create: false
+  replication:
+    enabled: false
+    forcePassword: false
+    user: replicator
+  rootUser:
+    forcePassword: false
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    port: 3306
+    type: ClusterIP
+  serviceAccount:
+    create: false
+  slave:
+    affinity: {}
+    antiAffinity: soft
+    config: |-
+      [mysqld]
+      skip-name-resolve
+      explicit_defaults_for_timestamp
+      basedir=/opt/bitnami/mariadb
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      tmpdir=/opt/bitnami/mariadb/tmp
+      max_allowed_packet=16M
+      bind-address=0.0.0.0
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+      log-error=/opt/bitnami/mariadb/logs/mysqld.log
+      character-set-server=UTF8
+      collation-server=utf8_general_ci
+
+      [client]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      default-character-set=UTF8
+
+      [manager]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+    extraInitContainers: ""
+    livenessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    nodeSelector: {}
+    persistence:
+      accessModes:
+      - ReadWriteOnce
+      enabled: true
+      size: 8Gi
+    podDisruptionBudget:
+      enabled: false
+      minAvailable: 1
+    readinessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 45
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    replicas: 1
+    resources: {}
+    service:
+      annotations: {}
+    tolerations: []
+    updateStrategy:
+      type: RollingUpdate
+  volumePermissions:
+    enabled: false
+    image:
+      pullPolicy: Always
+      registry: docker.io
+      repository: bitnami/minideb
+      tag: stretch
+    resources: {}
+metrics:
+  enabled: false
+  image:
+    pullPolicy: IfNotPresent
+    registry: docker.io
+    repository: bitnami/apache-exporter
+    tag: 0.7.0-debian-9-r104
+  podAnnotations:
+    prometheus.io/port: "9117"
+    prometheus.io/scrape: "true"
+  serviceMonitor:
+    additionalLabels: {}
+    enabled: false
+    honorLabels: false
+    interval: 30s
+nodeSelector:
+  role: primary
+persistence:
+  accessMode: ReadWriteOnce
+  enabled: true
+  size: 10Gi
+podAnnotations: {}
+readinessProbe:
+  failureThreshold: 6
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
+replicaCount: 1
+resources:
+  requests:
+    cpu: 300m
+    memory: 512Mi
+service:
+  annotations: {}
+  externalTrafficPolicy: Cluster
+  httpsPort: 443
+  httpsTargetPort: https
+  metricsPort: 9117
+  nodePorts:
+    http: ""
+    https: ""
+    metrics: ""
+  port: 80
+  type: ClusterIP
+sidecars: null
+tolerations: []
+updateStrategy:
+  type: RollingUpdate
+wordpressBlogName: User's Blog!
+wordpressEmail: user@example.com
+wordpressFirstName: FirstName
+wordpressLastName: LastName
+wordpressScheme: http
+wordpressSkipInstall: false
+wordpressTablePrefix: wp_
+wordpressUsername: user
+
+HOOKS:
+---
+# ken-wp-credentials-test
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "ken-wp-credentials-test"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: ken-wp-credentials-test
+    image: docker.io/bitnami/wordpress:5.2.4-debian-9-r18
+    imagePullPolicy: "IfNotPresent"
+    env:
+      - name: MARIADB_HOST
+        value: ken-wp-mariadb
+      - name: MARIADB_PORT
+        value: "3306"
+      - name: WORDPRESS_DATABASE_NAME
+        value: "bitnami_wordpress"
+      - name: WORDPRESS_DATABASE_USER
+        value: "bn_wordpress"
+      - name: WORDPRESS_DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: ken-wp-mariadb
+            key: mariadb-password
+    command: ["sh", "-c", "mysql --host=$MARIADB_HOST --port=$MARIADB_PORT --user=$WORDPRESS_DATABASE_USER --password=$WORDPRESS_DATABASE_PASSWORD"]
+  restartPolicy: Never
+---
+# ken-wp-mariadb-test-7ogqm
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "ken-wp-mariadb-test-7ogqm"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  initContainers:
+    - name: "test-framework"
+      image: "dduportal/bats:0.4.0"
+      command:
+        - "bash"
+        - "-c"
+        - |
+          set -ex
+          # copy bats to tools dir
+          cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+      - mountPath: /tools
+        name: tools
+  containers:
+    - name: mariadb-test
+      image: docker.io/bitnami/mariadb:10.3.18-debian-9-r36
+      imagePullPolicy: "IfNotPresent"
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ken-wp-mariadb
+              key: mariadb-root-password
+      volumeMounts:
+      - mountPath: /tests
+        name: tests
+        readOnly: true
+      - mountPath: /tools
+        name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: ken-wp-mariadb-tests
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never
+MANIFEST:
+
+---
+# Source: wordpress/charts/mariadb/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ken-wp-mariadb
+  labels:
+    app: "mariadb"
+    chart: "mariadb-6.13.0"
+    release: "ken-wp"
+    heritage: "Tiller"
+type: Opaque
+data:
+  mariadb-root-password: "NklRV3hnUXJtQg=="
+  
+  mariadb-password: "RmxFMXBSemd0ZQ=="
+---
+# Source: wordpress/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ken-wp-wordpress
+  labels:
+    app: "ken-wp-wordpress"
+    chart: "wordpress-7.6.8"
+    release: "ken-wp"
+    heritage: "Tiller"
+type: Opaque
+data:
+  wordpress-password: "Wjl6bGpnSm1KZA=="
+---
+# Source: wordpress/charts/mariadb/templates/master-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ken-wp-mariadb
+  labels:
+    app: "mariadb"
+    component: "master"
+    chart: "mariadb-6.13.0"
+    release: "ken-wp"
+    heritage: "Tiller"
+data:
+  my.cnf: |-
+    [mysqld]
+    skip-name-resolve
+    explicit_defaults_for_timestamp
+    basedir=/opt/bitnami/mariadb
+    plugin_dir=/opt/bitnami/mariadb/plugin
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    tmpdir=/opt/bitnami/mariadb/tmp
+    max_allowed_packet=16M
+    bind-address=0.0.0.0
+    pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+    log-error=/opt/bitnami/mariadb/logs/mysqld.log
+    character-set-server=UTF8
+    collation-server=utf8_general_ci
+    
+    [client]
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    default-character-set=UTF8
+    plugin_dir=/opt/bitnami/mariadb/plugin
+    
+    [manager]
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+---
+# Source: wordpress/charts/mariadb/templates/tests.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ken-wp-mariadb-tests
+data:
+  run.sh: |-
+    @test "Testing MariaDB is accessible" {
+      mysql -h ken-wp-mariadb -uroot -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
+    }
+---
+# Source: wordpress/templates/pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ken-wp-wordpress
+  labels:
+    app: "ken-wp-wordpress"
+    chart: "wordpress-7.6.8"
+    release: "ken-wp"
+    heritage: "Tiller"
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "10Gi"
+---
+# Source: wordpress/charts/mariadb/templates/master-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ken-wp-mariadb
+  labels:
+    app: "mariadb"
+    component: "master"
+    chart: "mariadb-6.13.0"
+    release: "ken-wp"
+    heritage: "Tiller"
+spec:
+  type: ClusterIP
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: mysql
+  selector:
+    app: "mariadb"
+    component: "master"
+    release: "ken-wp"
+---
+# Source: wordpress/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ken-wp-wordpress
+  labels:
+    app: "ken-wp-wordpress"
+    chart: "wordpress-7.6.8"
+    release: "ken-wp"
+    heritage: "Tiller"
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: null
+    - name: https
+      port: 443
+      targetPort: https
+      nodePort: null      
+  selector:
+    app: "ken-wp-wordpress"
+---
+# Source: wordpress/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ken-wp-wordpress
+  labels:
+    app: "ken-wp-wordpress"
+    chart: "wordpress-7.6.8"
+    release: "ken-wp"
+    heritage: "Tiller"
+spec:
+  selector:
+    matchLabels:
+      app: "ken-wp-wordpress"
+      release: "ken-wp"
+  strategy: 
+    type: RollingUpdate
+    
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "ken-wp-wordpress"
+        chart: "wordpress-7.6.8"
+        release: "ken-wp"
+    spec:      
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
+      containers:
+      - name: wordpress
+        image: docker.io/bitnami/wordpress:5.2.4-debian-9-r18
+        imagePullPolicy: "IfNotPresent"
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: MARIADB_HOST
+          value: ken-wp-mariadb
+        - name: MARIADB_PORT_NUMBER
+          value: "3306"
+        - name: WORDPRESS_DATABASE_NAME
+          value: "bitnami_wordpress"
+        - name: WORDPRESS_DATABASE_USER
+          value: "bn_wordpress"
+        - name: WORDPRESS_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ken-wp-mariadb
+              key: mariadb-password
+        - name: WORDPRESS_USERNAME
+          value: "user"
+        - name: WORDPRESS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ken-wp-wordpress
+              key: wordpress-password
+        - name: WORDPRESS_EMAIL
+          value: "user@example.com"
+        - name: WORDPRESS_FIRST_NAME
+          value: "FirstName"
+        - name: WORDPRESS_LAST_NAME
+          value: "LastName"
+        - name: WORDPRESS_HTACCESS_OVERRIDE_NONE
+          value: "no"
+        - name: WORDPRESS_BLOG_NAME
+          value: "User's Blog!"
+        - name: WORDPRESS_SKIP_INSTALL
+          value: "no"
+        - name: WORDPRESS_TABLE_PREFIX
+          value: "wp_"
+        - name: WORDPRESS_SCHEME
+          value: "http"
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /wp-login.php
+            port: http
+          failureThreshold: 6
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+          
+        readinessProbe:
+          httpGet:
+            path: /wp-login.php
+            port: http
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+          
+        volumeMounts:
+        - mountPath: /bitnami/wordpress
+          name: wordpress-data
+          subPath: wordpress
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
+          
+      volumes:
+      - name: wordpress-data
+        persistentVolumeClaim:
+          claimName: ken-wp-wordpress
+      nodeSelector:
+        role: primary
+---
+# Source: wordpress/charts/mariadb/templates/master-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ken-wp-mariadb
+  labels:
+    app: mariadb
+    chart: mariadb-6.13.0
+    release: ken-wp
+    heritage: Tiller
+    component: master
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+      release: ken-wp
+      component: master
+  serviceName: ken-wp-mariadb
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        chart: mariadb-6.13.0
+        release: ken-wp
+        component: master
+    spec:
+      serviceAccountName: default
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: mariadb
+                    release: ken-wp      
+      initContainers:
+      containers:
+        - name: "mariadb"
+          image: docker.io/bitnami/mariadb:10.3.18-debian-9-r36
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ken-wp-mariadb
+                  key: mariadb-root-password
+            - name: MARIADB_USER
+              value: "bn_wordpress"
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ken-wp-mariadb
+                  key: mariadb-password
+            - name: MARIADB_DATABASE
+              value: "bitnami_wordpress"
+          ports:
+            - name: mysql
+              containerPort: 3306
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "exec mysqladmin status -uroot -p$MARIADB_ROOT_PASSWORD"]
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "exec mysqladmin status -uroot -p$MARIADB_ROOT_PASSWORD"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/mariadb
+            - name: config
+              mountPath: /opt/bitnami/mariadb/conf/my.cnf
+              subPath: my.cnf
+      volumes:
+        - name: config
+          configMap:
+            name: ken-wp-mariadb
+      nodeSelector:
+        role: primary
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: "mariadb"
+          component: "master"
+          release: "ken-wp"
+          heritage: "Tiller"
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"

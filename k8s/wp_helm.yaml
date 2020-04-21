@@ -1,0 +1,12 @@
+service:
+    type: ClusterIP
+nodeSelector:
+    role: primary
+mariadb:
+    master:
+        nodeSelector:
+            role: primary
+    slave:
+        nodeSelector:
+            role: primary
+    mariadbRootPassword: bpedyLJZ9H
