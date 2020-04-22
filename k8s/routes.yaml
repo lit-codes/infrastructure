@@ -32,3 +32,20 @@ spec:
       port: 80
   tls:
     secretName: cloudflarecrtsecret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dev-wp
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`dev-wp.lit.codes`)
+    kind: Rule
+    services:
+    - name: dev-wp-wordpress
+      port: 80
+  tls:
+    secretName: cloudflarecrtsecret
