@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmp-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rmp-db
+  template:
+    metadata:
+      labels:
+        app: rmp-db
+    spec:
+      containers:
+        - name: rmp-db
+          image: postgres:12
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data-dir 
+          env:
+            - name: POSTGRES_DB
+              value: rmp
+            - name: POSTGRES_USER
+              value: rmp
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: password
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: rmp-db-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rmp-db-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 15Gi
