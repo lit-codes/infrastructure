@@ -9,4 +9,3 @@ mariadb:
     slave:
         nodeSelector:
             role: primary
-    mariadbRootPassword: bpedyLJZ9H
