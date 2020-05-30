@@ -2,33 +2,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rmp-worker
+  name: rmp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rmp-worker
+      app: rmp
   template:
     metadata:
       labels:
-        app: rmp-worker
+        app: rmp
     spec:
       nodeSelector:
-        role: worker
+        role: development
       containers:
-        - name: rmp-worker
-          image: litcodes/rmp:armhf
+        - name: rmp
+          image: litcodes/rmp:amd64
           imagePullPolicy: "Always"
           ports:
             - containerPort: 4000
-
           env:
             - name: NODE_ENV
               value: production
             - name: REDIS_URL
-              value: rmp-redis-worker
+              value: "redis://rmp-redis:6379"
             - name: CUBEJS_DB_HOST
-              value: rmp-db-worker
+              value: rmp-db
             - name: CUBEJS_DB_NAME
               value: rmp
             - name: CUBEJS_DB_USER
@@ -52,3 +51,21 @@ spec:
                 secretKeyRef:
                   name: rmp-secret
                   key: apisecret
+            - name: LOGIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: loginpassword
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmp
+  labels:
+    app: rmp
+spec:
+  ports:
+  - port: 4000
+    protocol: TCP
+  selector:
+    app: rmp

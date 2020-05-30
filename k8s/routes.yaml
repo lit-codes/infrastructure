@@ -2,7 +2,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: dev
+  name: development
   namespace: default
 spec:
   entryPoints:
@@ -11,7 +11,7 @@ spec:
   - match: Host(`rmp.lit.codes`)
     kind: Rule
     services:
-    - name: rmp-prod
+    - name: rmp
       port: 4000
   tls:
     secretName: cloudflarecrtsecret

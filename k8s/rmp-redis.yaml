@@ -2,60 +2,61 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rmp-db-worker
+  name: rmp-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rmp-db-worker
+      app: rmp-redis
   template:
     metadata:
       labels:
-        app: rmp-db-worker
+        app: rmp-redis
     spec:
       nodeSelector:
-        role: worker
+        role: development
       containers:
-        - name: rmp-db-worker
-          image: postgres:12
+        - name: rmp-redis
+          image: redis
           imagePullPolicy: "IfNotPresent"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "600m"
+          args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
-            - containerPort: 5432
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: data-dir 
+            - containerPort: 6379
           env:
-            - name: POSTGRES_DB
-              value: rmp
-            - name: POSTGRES_USER
-              value: rmp
-            - name: POSTGRES_PASSWORD
+            - name: REDIS_PASS
               valueFrom:
                 secretKeyRef:
                   name: rmp-secret
-                  key: dbpassword
+                  key: redispassword
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir 
       volumes:
         - name: data-dir
           persistentVolumeClaim:
-            claimName: rmp-db-worker-pvc
+            claimName: rmp-redis-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rmp-db-worker
+  name: rmp-redis
   labels:
-    app: rmp-db-worker
+    app: rmp-redis
 spec:
   ports:
-  - port: 5432
+  - port: 6379
     protocol: TCP
   selector:
-    app: rmp-db-worker
+    app: rmp-redis
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: rmp-db-worker-pvc
+  name: rmp-redis-pvc
   namespace: default
 spec:
   accessModes:
