@@ -7,6 +7,15 @@
   },
   "dependencies": {
     "@cubejs-backend/postgres-driver": "^0.19.20",
-    "@cubejs-backend/server": "^0.19.21"
+    "@cubejs-backend/server": "^0.19.21",
+    "body": "^5.1.0",
+    "cookie": "^0.4.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "passport": "^0.4.1",
+    "path": "^0.12.7",
+    "serve": "^11.3.1"
   }
 }
