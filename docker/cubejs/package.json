@@ -3,13 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "start": "bash -c 'set -a; . .env; set +a; node index.js'"
   },
   "dependencies": {
     "@cubejs-backend/postgres-driver": "^0.19.20",
     "@cubejs-backend/server": "^0.19.21",
     "cookie-parser": "^1.4.5",
     "express-session": "^1.17.1",
+    "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0"
   }

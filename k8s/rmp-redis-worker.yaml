@@ -17,17 +17,7 @@ spec:
         - name: rmp-redis-worker
           image: redis
           imagePullPolicy: "IfNotPresent"
-          args: 
-            - '--requirepass'
-            - '$(REDIS_PASS)'
-            - '--appendonly'
-            - 'yes'
-            - '--save'
-            - '900'
-            - '1'
-            - '--save'
-            - '30'
-            - '1'
+          args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
             - containerPort: 6379
           env:
@@ -43,6 +33,19 @@ spec:
         - name: data-dir
           persistentVolumeClaim:
             claimName: rmp-redis-worker-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmp-redis-worker
+  labels:
+    app: rmp-redis-worker
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+  selector:
+    app: rmp-redis-worker
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

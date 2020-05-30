@@ -8,10 +8,10 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`dev.lit.codes`)
+  - match: Host(`rmp.lit.codes`)
     kind: Rule
     services:
-    - name: dev-wordpress
-      port: 80
+    - name: rmp-prod
+      port: 4000
   tls:
     secretName: cloudflarecrtsecret

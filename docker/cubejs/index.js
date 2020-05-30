@@ -1,5 +1,6 @@
 require('dotenv').config();
 const http = require('http');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -20,7 +21,7 @@ app.use(passport.session());
 
 passport.use(new BasicStrategy(
   (user, password, done) => {
-    if (user === 'admin' && password === 'admin') {
+    if (user === 'admin' && password === process.env.LOGIN_PASSWORD) {
       done(null, { user });
     } else {
       done(null, false);
@@ -42,6 +43,13 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.get('/auth/cubejs-token', (req, res) => {
+  res.json({
+    // Take note: cubejs expects the JWT payload to contain an object!
+    token: jwt.sign({ u: req.user }, process.env.CUBEJS_API_SECRET, { expiresIn: '1d' })
+  })
+})
 
 if (process.env.NODE_ENV === 'production') {
   app.use(serveStatic(path.join(__dirname, 'dashboard-app/build')));
