@@ -19,10 +19,6 @@ spec:
         - name: rmp-db
           image: postgres:12
           imagePullPolicy: "IfNotPresent"
-          resources:
-            limits:
-              memory: "512Mi"
-              cpu: "600m"
           ports:
             - containerPort: 5432
           volumeMounts:
