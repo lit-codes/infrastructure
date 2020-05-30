@@ -4,3 +4,4 @@ node_modules
 dashboard-app/node_modules
 dashboard-app/build
 dashboard-app/README.md
+build.sh
