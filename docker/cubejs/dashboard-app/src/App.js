@@ -9,7 +9,7 @@ import cubejs from "@cubejs-client/core";
 import { CubeProvider } from "@cubejs-client/react";
 import client from "./graphql/client";
 import Header from "./components/Header";
-const API_URL = `http://localhost:4000`;
+const API_URL = `${document.location.protocol}//${document.location.host}`;
 
 const cubejsApi = cubejs(() => {
   return fetch(`${API_URL}/auth/cubejs-token`)
