@@ -2,19 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rmp-db
+  name: rmp-db-worker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rmp-db
+      app: rmp-db-worker
   template:
     metadata:
       labels:
-        app: rmp-db
+        app: rmp-db-worker
     spec:
+      nodeSelector:
+        role: worker
       containers:
-        - name: rmp-db
+        - name: rmp-db-worker
           image: postgres:12
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -31,16 +33,29 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: rmp-secret
-                  key: password
+                  key: dbpassword
       volumes:
         - name: data-dir
           persistentVolumeClaim:
-            claimName: rmp-db-pvc
+            claimName: rmp-db-worker-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmp-db-worker
+  labels:
+    run: rmp-db-worker
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    run: rmp-db-worker
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: rmp-db-pvc
+  name: rmp-db-worker-pvc
   namespace: default
 spec:
   accessModes:

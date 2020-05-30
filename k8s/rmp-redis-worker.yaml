@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmp-redis-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rmp-redis-worker
+  template:
+    metadata:
+      labels:
+        app: rmp-redis-worker
+    spec:
+      containers:
+        - name: rmp-redis-worker
+          image: redis
+          imagePullPolicy: "IfNotPresent"
+          args: 
+            - '--requirepass'
+            - '$(REDIS_PASS)'
+            - '--appendonly'
+            - 'yes'
+            - '--save'
+            - '900'
+            - '1'
+            - '--save'
+            - '30'
+            - '1'
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: redispassword
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir 
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: rmp-redis-worker-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rmp-redis-worker-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 15Gi
