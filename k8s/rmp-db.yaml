@@ -14,7 +14,7 @@ spec:
         app: rmp-db
     spec:
       nodeSelector:
-        role: development
+        role: worker
       containers:
         - name: rmp-db
           image: postgres:12
@@ -63,4 +63,4 @@ spec:
   storageClassName: local-path
   resources:
     requests:
-      storage: 15Gi
+      storage: 9Gi

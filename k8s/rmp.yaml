@@ -14,7 +14,7 @@ spec:
         app: rmp
     spec:
       nodeSelector:
-        role: development
+        role: primary
       containers:
         - name: rmp
           image: litcodes/rmp:amd64

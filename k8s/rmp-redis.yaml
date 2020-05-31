@@ -14,7 +14,7 @@ spec:
         app: rmp-redis
     spec:
       nodeSelector:
-        role: development
+        role: primary
       containers:
         - name: rmp-redis
           image: redis
