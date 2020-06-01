@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "node index.js",
-    "start": "bash -c 'set -a; . .env; set +a; node index.js'"
+    "dev": "bash -c 'set -a; . .env; set +a; NODE_ENV=development node index.js'",
+    "start": "bash -c 'set -a; . .env; set +a; NODE_ENV=production node index.js'"
   },
   "dependencies": {
     "@cubejs-backend/postgres-driver": "^0.19.20",
