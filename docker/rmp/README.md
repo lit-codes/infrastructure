@@ -35,6 +35,11 @@ Vercel or Netlify.
 This is our backend code, currently pretty dumb, and does nothing useful but
 handling authentication and serving the front-end static content.
 
+# To build the image
+
+To build and push the image you can run the `build.sh`, see [how to build the
+images](../README.md#how-to-build-the-images).
+
 # Work-in-Progress
 
 If you came accross this repo, please note that this is a work-in-progress and
