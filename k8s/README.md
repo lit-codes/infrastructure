@@ -1,31 +1,18 @@
-# Kubernetes files
+# Kubernetes projects
 
-# Deploy RMP servers
+## rmp
 
-```bash
-kubectl apply -f rmp.yaml
-kubectl apply -f rmp-db.yaml
-kubectl apply -f rmp-redis.yaml
-kubectl apply -f routes.yaml # Optional, only do if you use Traefik
-```
+This is our ratemyprofessor.com analyser Kubernetes manifests, it contains
+everything needed to start our rmp servers including the API and DBs. See [rmp
+README](rmp/README.md)
 
-# Test the UI on localhost
+## Traefik
 
-```bash
-kubectl port-forward rmp-[the rest] 4000
-xdg-open http://localhost:4000
-```
+Traefik is a reverse-proxy, running on the master node of our Kubernetes
+cluster, and is responsible of serving our web to the world. See [traefik
+README]( traefik/README.md )
 
-# Deploy DBs
+## wp-helm
 
-Download the [pg_dump file](https://drive.google.com/file/d/1n1w6wdfBg7cgdpXkFOTCOmkr5oEOr45j/view?usp=sharing)
-
-Login to the `rmp-db` pod:
-
-```bash
-kubectl exec -it rmp-db-[the rest] -- bash
-$ psql -U rmp
-rmp# create role postgres;
-#\q
-$ pg_restore -Cc -U rmp -d rmp pgdump.tar
-```
+This is the Helm config for `bitnami/wordpress` helm chart, and is used for my
+wordpress projects.
