@@ -8,8 +8,9 @@ Ansible files (yet to be added). Currently contains the `iptables` file only.
 
 # Kubernetes
 
-Kubernetes configs are inside the `k8s` folder.
+Kubernetes configs are inside the `k8s` folder. See [k8s README](k8s/README.md)
 
 # Docker
 
-Contains the Docker files to be used mostly in k8s projects.
+Contains the Docker files to be used mostly in k8s projects. See
+[Docker README](docker/README.md)
