@@ -9,6 +9,7 @@ Current nodes running on the Kubernetes cluster:
 
 - `endpoint-sg-1`: this is a Digital Ocean droplet, running our Kubernetes cluster
 - `raspberrypi`: which is a Raspberry Pi 4, currently used to run our PG server
+- `buster01`: A newly added node, running on Debian Buster
 
 ## Node labels
 
