@@ -14,7 +14,7 @@ spec:
         app: rmp-db
     spec:
       nodeSelector:
-        role: worker
+        role: worker-md
       containers:
         - name: rmp-db
           image: postgres:12
