@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teacher-scraper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teacher-scraper
+  template:
+    metadata:
+      labels:
+        app: teacher-scraper
+    spec:
+      nodeSelector:
+        role: worker-lg
+      containers:
+        - name: teacher-scraper
+          image: litcodes/teacher-scraper
+          imagePullPolicy: "Always"

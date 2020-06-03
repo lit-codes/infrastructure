@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-sql-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: school-sql-generator
+  template:
+    metadata:
+      labels:
+        app: school-sql-generator
+    spec:
+      nodeSelector:
+        role: worker-lg
+      containers:
+        - name: school-sql-generator
+          image: litcodes/school-sql-generator
+          imagePullPolicy: "Always"

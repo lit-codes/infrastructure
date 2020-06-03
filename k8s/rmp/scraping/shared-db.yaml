@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shared-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shared-db
+  template:
+    metadata:
+      labels:
+        app: shared-db
+    spec:
+      nodeSelector:
+        role: worker-md
+      containers:
+        - name: shared-db
+          image: postgres:12
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data-dir 
+          env:
+            - name: POSTGRES_DB
+              value: rmp
+            - name: POSTGRES_USER
+              value: user
+            - name: POSTGRES_PASSWORD
+              value: pass
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: shared-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shared-db
+  labels:
+    app: shared-db
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    app: shared-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-db-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 9Gi

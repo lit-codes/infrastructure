@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-sql-applier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: school-sql-applier
+  template:
+    metadata:
+      labels:
+        app: school-sql-applier
+    spec:
+      nodeSelector:
+        role: worker-lg
+      containers:
+        - name: school-sql-applier
+          image: litcodes/school-sql-applier
+          imagePullPolicy: "Always"

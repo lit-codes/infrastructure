@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shared-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shared-redis
+  template:
+    metadata:
+      labels:
+        app: shared-redis
+    spec:
+      nodeSelector:
+        role: worker-lg
+      containers:
+        - name: shared-redis
+          image: redis
+          imagePullPolicy: "IfNotPresent"
+          args: ["--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir 
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: shared-redis-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shared-redis
+  labels:
+    app: shared-redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+  selector:
+    app: shared-redis
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-redis-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 15Gi

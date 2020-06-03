@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-scraper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: school-scraper
+  template:
+    metadata:
+      labels:
+        app: school-scraper
+    spec:
+      nodeSelector:
+        role: worker-lg
+      containers:
+        - name: school-scraper
+          image: litcodes/school-scraper
+          imagePullPolicy: "Always"
