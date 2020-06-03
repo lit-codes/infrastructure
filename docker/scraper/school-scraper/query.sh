@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 : ${CACHE_DIR:=/tmp}
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
@@ -68,6 +66,7 @@ getSchool() {
 while :; do
     school=$(input)
     output=$(getSchool $school)
+    echo "$output" | output
     if [ $? == 0 ]; then
         echo "School added: $school"
     else

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
 : ${REDIS_CONNECTION:=redis://$REDIS_HOST:$REDIS_PORT}
@@ -45,6 +43,7 @@ getTeacher() {
 while :; do
     teacher=$(input)
     output=$(getTeacher $teacher)
+    echo "$output" | output
     if [ $? == 0 ]; then
         echo "Teacher added: $teacher"
     else

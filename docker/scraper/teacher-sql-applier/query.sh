@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
 : ${REDIS_CONNECTION:=redis://$REDIS_HOST:$REDIS_PORT}
@@ -13,7 +11,7 @@ set -e
 : ${DB_CONNECTION:=postgres://$DB_HOST:$DB_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS}
 
 output() {
-    psql -d "$DB_CONNECTION"
+    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION"
 }
 
 input() {

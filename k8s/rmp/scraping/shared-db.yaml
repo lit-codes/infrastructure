@@ -14,7 +14,7 @@ spec:
         app: shared-db
     spec:
       nodeSelector:
-        role: worker-md
+        role: worker-lg
       containers:
         - name: shared-db
           image: postgres:12
