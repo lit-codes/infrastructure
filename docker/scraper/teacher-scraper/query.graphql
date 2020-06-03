@@ -1,0 +1,99 @@
+query RatingsListQuery(
+  $count: Int!
+  $id: ID!
+  $courseFilter: String
+  $cursor: String
+) {
+  node(id: $id) {
+    __typename
+    ... on Teacher {
+      ...RatingsList_teacher_4pguUW
+    }
+    id
+  }
+}
+
+fragment RatingsList_teacher_4pguUW on Teacher {
+  id
+  legacyId
+  department
+  wouldTakeAgainPercent
+  avgDifficulty
+  avgRating
+  school {
+    id
+    legacyId
+    name
+    city
+    state
+  }
+  firstName
+  lastName
+  numRatings
+  ratings(first: $count, after: $cursor, courseFilter: $courseFilter) {
+    edges {
+      cursor
+      node {
+        ...Rating_rating
+        id
+        __typename
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+fragment Rating_rating on Rating {
+  comment
+  flagStatus
+  ...RatingHeader_rating
+  ...RatingValues_rating
+  ...CourseMeta_rating
+  ...RatingTags_rating
+  ...RatingFooter_rating
+}
+
+fragment RatingHeader_rating on Rating {
+  date
+  class
+  helpfulRating
+  clarityRating
+}
+
+fragment RatingValues_rating on Rating {
+  helpfulRating
+  clarityRating
+  difficultyRating
+}
+
+fragment CourseMeta_rating on Rating {
+  courseType
+  attendanceMandatory
+  wouldTakeAgain
+  grade
+  textbookUse
+  isForOnlineClass
+}
+
+fragment RatingTags_rating on Rating {
+  ratingTags
+}
+
+fragment RatingFooter_rating on Rating {
+  id
+  comment
+  adminReviewedAt
+  flagStatus
+  legacyId
+  thumbsUpTotal
+  thumbsDownTotal
+  thumbs {
+    userId
+    thumbsUp
+    thumbsDown
+    id
+  }
+}
