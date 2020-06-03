@@ -26,7 +26,8 @@ error() {
 
 while :; do
     sql=$(input)
-    if echo "$sql" | output; then
+    echo "$sql" | output
+    if [ $? == 0 ]; then
         echo "Teacher SQL added"
     else
         echo "$sql" | error
