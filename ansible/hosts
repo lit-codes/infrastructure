@@ -1,2 +1,4 @@
 178.128.106.70  endpoint-sg-1 endpoint-sg-1.lit.codes
 89.32.249.164   endpoint-me-1 endpoint-me-1.lit.codes
+192.168.0.102   pi
+192.168.0.156   buster01
