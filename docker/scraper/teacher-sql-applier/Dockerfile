@@ -6,6 +6,7 @@ perl \
 curl \
 bash \
 redis \
+postgresql-client \
 jq
 
 WORKDIR /opt/
