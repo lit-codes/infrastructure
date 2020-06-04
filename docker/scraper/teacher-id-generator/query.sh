@@ -20,7 +20,8 @@ generateRange() {
 }
 
 queueIsNotEmpty() {
-    redis-cli -u $REDIS_CONNECTION lrange teachers 0 0|grep -o '\d*'
+    result=`redis-cli -u $REDIS_CONNECTION lrange teachers 0 0`
+    test -n "$result"
     return $?
 }
 
