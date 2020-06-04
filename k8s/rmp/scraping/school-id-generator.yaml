@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-id-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: school-id-generator
+  template:
+    metadata:
+      labels:
+        app: school-id-generator
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-lg
+      containers:
+        - name: school-id-generator
+          image: litcodes/school-id-generator
+          imagePullPolicy: "Always"
+          env:
+          - name: BATCH_SIZE
+            value: '10'

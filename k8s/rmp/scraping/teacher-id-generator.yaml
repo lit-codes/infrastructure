@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teacher-id-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teacher-id-generator
+  template:
+    metadata:
+      labels:
+        app: teacher-id-generator
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-lg
+      containers:
+        - name: teacher-id-generator
+          image: litcodes/teacher-id-generator
+          imagePullPolicy: "Always"
+          env:
+          - name: BATCH_SIZE
+            value: '10'
