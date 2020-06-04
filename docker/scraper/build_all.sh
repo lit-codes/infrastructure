@@ -2,12 +2,12 @@
 
 set -e
 
-tag=${1:=latest}
+platfors=${1:=linux/amd64}
 for repo in */
 do
 (
     test ! -d $repo && continue
     cd $repo
-    ./build.sh $tag
+    ./build.sh $platfors
 )
 done

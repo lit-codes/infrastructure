@@ -1,3 +1,2 @@
-IMAGE=litcodes/school-scraper:$1
-docker build -t $IMAGE .
-docker push $IMAGE
+platforms="$@"
+DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform $platforms --push -t litcodes/school-scraper:latest .
