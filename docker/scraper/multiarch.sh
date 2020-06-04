@@ -14,9 +14,9 @@ do
     test ! -d $repo && continue
 (
     image=litcodes/$repo
-    docker manifest create \
+    DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create \
         $image:latest \
 	$(echo $archs | xargs -d' ' -IXX echo -n --amend $image:XX\ )
-    docker push $image:latest
+    DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push $image:latest
 )
 done
