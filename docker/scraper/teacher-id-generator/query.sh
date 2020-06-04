@@ -12,15 +12,15 @@
 : ${DB_CONNECTION:=postgres://$DB_HOST:$DB_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS}
 
 max_id() {
-    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" -c 'select max(id) from school' | grep -o '^ \d*$'
+    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" -c 'select max(id) from teacher' | grep -o '^ \d*$'
 }
 
 generateRange() {
-    eval redis-cli -u $REDIS_CONNECTION lpush schools {$1..$2}
+    eval redis-cli -u $REDIS_CONNECTION lpush teachers {$1..$2}
 }
 
 queueIsNotEmpty() {
-    redis-cli -u $REDIS_CONNECTION lrange schools 0 0|grep -o '\d*'
+    redis-cli -u $REDIS_CONNECTION lrange teachers 0 0|grep -o '\d*'
     return $?
 }
 
