@@ -13,8 +13,16 @@ spec:
       labels:
         app: school-sql-applier
     spec:
-      nodeSelector:
-        role: worker-lg
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-lg
+                - worker-md
       containers:
         - name: school-sql-applier
           image: litcodes/school-sql-applier

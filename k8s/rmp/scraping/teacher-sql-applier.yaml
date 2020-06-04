@@ -13,8 +13,15 @@ spec:
       labels:
         app: teacher-sql-applier
     spec:
-      nodeSelector:
-        role: worker-lg
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-lg
       containers:
         - name: teacher-sql-applier
           image: litcodes/teacher-sql-applier
