@@ -7,7 +7,7 @@ archs=$(cat archs)
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 for arch in $archs
 do
-    ./build.sh $arch
+    ./build_all.sh $arch
 done
 for repo in *
 do
