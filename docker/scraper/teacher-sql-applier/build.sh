@@ -1,3 +1,2 @@
-IMAGE=litcodes/teacher-sql-applier:$1
-docker build -t $IMAGE .
-docker push $IMAGE
+platforms="$@"
+DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform $platforms --push -t litcodes/teacher-sql-applier:latest .
