@@ -1,6 +1,7 @@
 #!/bin/bash
 
-: ${BATCH_SIZE:=1000}
+: ${BATCH_SIZE:=10}
+: ${QUEUE_SIZE:=20}
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
 : ${REDIS_CONNECTION:=redis://$REDIS_HOST:$REDIS_PORT}
@@ -20,8 +21,11 @@ generateRange() {
 }
 
 queueIsNotEmpty() {
-    result=`redis-cli -u $REDIS_CONNECTION lrange schools 0 0`
-    test -n "$result"
+    len_sqls=`redis-cli -u $REDIS_CONNECTION llen school_rating_sqls | grep '\d*'`
+    len_ratings=`redis-cli -u $REDIS_CONNECTION llen school_ratings | grep '\d*'`
+    len=`redis-cli -u $REDIS_CONNECTION llen schools | grep '\d*'`
+    (( total=$len + $len_ratings + $len_sqls ))
+    test $total -gt $QUEUE_SIZE
     return $?
 }
 
@@ -30,5 +34,5 @@ while :; do
     : ${from:=0}
     (( to=$from + $BATCH_SIZE ))
     generateRange $from $to 
-    while queueIsNotEmpty; do sleep 10s; done
+    while queueIsNotEmpty; do sleep 20s; done
 done
