@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: school-id-generator
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: school-id-generator
@@ -28,6 +28,6 @@ spec:
           imagePullPolicy: "Always"
           env:
           - name: BATCH_SIZE
-            value: '10'
+            value: '1'
           - name: QUEUE_SIZE
-            value: '15'
+            value: '1'
