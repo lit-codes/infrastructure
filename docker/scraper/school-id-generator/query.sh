@@ -14,7 +14,7 @@
 : ${DB_CONNECTION:=postgres://$DB_HOST:$DB_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS}
 
 max_id() {
-    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" -c 'select max(id) from school' | grep -o '^ \d*$'
+    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" -c 'select max(id) from school' | grep -oP '^ \d+$'
 }
 
 generateRange() {
@@ -24,7 +24,7 @@ generateRange() {
     ids=''
     size=0
     while [ $size -lt $QUEUE_SIZE ];do
-        error_count=`redis-cli -u $REDIS_CONNECTION hget school_failure_count $id | grep -o '\d*'`
+        error_count=`redis-cli -u $REDIS_CONNECTION hget school_failure_count $id | grep -oP '\d+'`
         echo $id $error_count
         : ${error_count:=0}
         if [ $error_count -gt $FAILURE_THRESHOLD ]; then
@@ -40,9 +40,9 @@ generateRange() {
 }
 
 queueIsEmpty() {
-    len_sqls=`redis-cli -u $REDIS_CONNECTION llen school_rating_sqls | grep -o '\d*'`
-    len_ratings=`redis-cli -u $REDIS_CONNECTION llen school_ratings | grep -o '\d*'`
-    len=`redis-cli -u $REDIS_CONNECTION llen schools | grep -o '\d*'`
+    len_sqls=`redis-cli -u $REDIS_CONNECTION llen school_rating_sqls | grep -oP '\d+'`
+    len_ratings=`redis-cli -u $REDIS_CONNECTION llen school_ratings | grep -oP '\d+'`
+    len=`redis-cli -u $REDIS_CONNECTION llen schools | grep -oP '\d+'`
     (( total=$len + $len_ratings + $len_sqls ))
     test $total -lt $QUEUE_SIZE
     return $?
