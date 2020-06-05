@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: teacher-id-generator
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: teacher-id-generator
