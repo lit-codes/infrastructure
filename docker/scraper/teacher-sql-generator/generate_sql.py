@@ -81,7 +81,10 @@ class FileDB:
             for key in params_copy:
                 if isinstance(params_copy[key], dict) or isinstance(params_copy[key], list):
                     continue
-                params_copy[key] = psycopg2.extensions.adapt(params_copy[key]).getquoted().decode('utf8')
+                value = params_copy[key]
+                if isinstance(value, str):
+                    value = value.encode('utf8')
+                params_copy[key] = psycopg2.extensions.adapt(value).getquoted().decode('utf8')
         else:
             params_copy = params
         return query % params_copy
