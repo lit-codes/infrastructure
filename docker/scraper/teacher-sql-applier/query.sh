@@ -22,12 +22,18 @@ error() {
     redis-cli -u $REDIS_CONNECTION -x --raw lpush failed_teacher_rating_sqls
 }
 
+incr_error_count() {
+    redis-cli -u $REDIS_CONNECTION hincrby teacher_failure_count $1 1
+}
+
 while :; do
     sql=$(input)
     echo "$sql" | output
+    teacherId=`echo $sql | grep 'teacherId: \d*'| grep '\d*'`
     if [ $? == 0 ]; then
         echo "Teacher SQL added"
     else
         echo "$sql" | error
+	incr_error_count $teacherId
     fi
 done

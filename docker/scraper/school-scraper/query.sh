@@ -17,6 +17,10 @@ error() {
     redis-cli -u $REDIS_CONNECTION -x --raw lpush failed_school_ratings
 }
 
+incr_error_count() {
+    redis-cli -u $REDIS_CONNECTION hincrby school_failure_count $1 1
+}
+
 querySchool() {
     id=$1
     encoded_id=`echo -n School-$id |base64`
@@ -72,5 +76,6 @@ while :; do
     else
         echo "Failed to get school: $school"
         echo "$output" | error
+        incr_error_count $school
     fi
 done

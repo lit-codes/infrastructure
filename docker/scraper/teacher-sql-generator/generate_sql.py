@@ -30,6 +30,7 @@ def enterTeacher(db, teacher):
         rating = edge['node']
         rating['teacherId'] = teacher['legacyId']
         db.run("""
+            -- teacherId: %(teacherId)s
             INSERT INTO teacher_ratings (
                 id,
                 admin_review_timestamp,
@@ -112,3 +113,4 @@ if __name__ == '__main__':
         except Exception as e:
             print('Failed adding teacher %s, error is: %s' % (teacherId, str(e)), flush=True)
             redis.lpush('failed_teacher_rating_sqls', db.get())
+            redis.hincrby('teacher_failure_count', teacherId, 1)

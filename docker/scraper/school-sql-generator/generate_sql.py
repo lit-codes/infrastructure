@@ -17,6 +17,7 @@ def enterSchool(db, school):
         rating['schoolId'] = school['legacyId']
         rating['crTimestamp'] = int(rating['crTimestamp'] / 1000)
         db.run("""
+            -- schoolId: %(schoolId)s
             INSERT INTO school_ratings (
                 id,
                 condition,
@@ -102,3 +103,4 @@ if __name__ == '__main__':
         except Exception as e:
             print('Failed adding school %s, error is: %s' % (schoolId, str(e)), flush=True)
             redis.lpush('failed_school_rating_sqls', db.get())
+            redis.hincrby('school_failure_count', schoolId, 1)

@@ -17,7 +17,17 @@ max_id() {
 }
 
 generateRange() {
-    eval redis-cli -u $REDIS_CONNECTION lpush schools {$1..$2}
+    from=$1
+    : ${from:=0}
+    (( to=$from + $BATCH_SIZE ))
+    ids=''
+    for id in `seq $from $to`; do
+        error_count=`redis-cli -u $REDIS_CONNECTION hget school_failure_count $id | grep '\d*'`
+	: ${error_count:=0}
+        test $error_count -gt 3 && continue
+	ids+=" $id"
+    done
+    echo redis-cli -u $REDIS_CONNECTION lpush schools $ids
 }
 
 queueIsNotEmpty() {
@@ -31,8 +41,6 @@ queueIsNotEmpty() {
 
 while :; do
     from=$(max_id)
-    : ${from:=0}
-    (( to=$from + $BATCH_SIZE ))
-    generateRange $from $to 
+    generateRange $from
     while queueIsNotEmpty; do sleep 20s; done
 done
