@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: teacher-sql-applier
 spec:
-  replicas: 0
+  replicas: 5
   selector:
     matchLabels:
       app: teacher-sql-applier
@@ -22,6 +22,7 @@ spec:
                 operator: In
                 values:
                 - worker-lg
+                - worker-md
       containers:
         - name: teacher-sql-applier
           image: litcodes/teacher-sql-applier
