@@ -29,3 +29,5 @@ spec:
           env:
           - name: BATCH_SIZE
             value: '10'
+          - name: QUEUE_SIZE
+            value: '15'
