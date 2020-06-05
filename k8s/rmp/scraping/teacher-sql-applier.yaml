@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: teacher-sql-applier
 spec:
-  replicas: 5
+  replicas: 0
   selector:
     matchLabels:
       app: teacher-sql-applier
