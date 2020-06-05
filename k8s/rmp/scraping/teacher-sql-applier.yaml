@@ -26,4 +26,8 @@ spec:
       containers:
         - name: teacher-sql-applier
           image: litcodes/teacher-sql-applier
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           imagePullPolicy: "Always"

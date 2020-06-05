@@ -21,6 +21,7 @@ spec:
           resources:
             limits:
               memory: "1Gi"
+              cpu: "1"
           imagePullPolicy: "IfNotPresent"
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:

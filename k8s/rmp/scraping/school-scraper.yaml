@@ -26,4 +26,8 @@ spec:
       containers:
         - name: school-scraper
           image: litcodes/school-scraper
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           imagePullPolicy: "Always"

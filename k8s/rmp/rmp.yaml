@@ -18,6 +18,10 @@ spec:
       containers:
         - name: rmp
           image: litcodes/rmp:amd64
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "1"
           imagePullPolicy: "Always"
           ports:
             - containerPort: 4000
