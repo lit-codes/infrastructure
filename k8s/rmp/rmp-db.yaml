@@ -18,6 +18,10 @@ spec:
       containers:
         - name: rmp-db
           image: postgres:12
+          resources:
+            limits:
+              memory: "4Gi"
+              cpu: "2"
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432
