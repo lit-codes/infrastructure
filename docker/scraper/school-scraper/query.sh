@@ -13,10 +13,6 @@ input() {
     redis-cli -u $REDIS_CONNECTION brpop schools 0 | grep -v '^schools$'
 }
 
-error() {
-    redis-cli -u $REDIS_CONNECTION -x --raw lpush failed_school_ratings
-}
-
 incr_error_count() {
     redis-cli -u $REDIS_CONNECTION hincrby school_failure_count $1 1
 }
@@ -70,12 +66,11 @@ getSchool() {
 while :; do
     school=$(input)
     output=$(getSchool $school)
-    echo "$output" | output
+    echo "schoolId:$school,$output" | output
     if [ $? == 0 ]; then
         echo "School added: $school"
     else
         echo "Failed to get school: $school"
-        echo "$output" | error
         incr_error_count $school
     fi
 done

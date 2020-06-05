@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 import json
 from base64 import b64decode
 import psycopg2
@@ -9,6 +10,7 @@ from redis import Redis
 
 def enterTeacher(db, teacher):
     school = teacher['school']
+    db.run("--teacherId:%(legacyId)s", teacher)
     if school:
         teacher['schoolId'] = school['legacyId']
         db.run("INSERT INTO school VALUES (%(legacyId)s, %(name)s, %(state)s, %(city)s) on conflict do nothing", school)
@@ -30,7 +32,6 @@ def enterTeacher(db, teacher):
         rating = edge['node']
         rating['teacherId'] = teacher['legacyId']
         db.run("""
-            -- teacherId: %(teacherId)s
             INSERT INTO teacher_ratings (
                 id,
                 admin_review_timestamp,
@@ -82,10 +83,10 @@ class FileDB:
             for key in params_copy:
                 if isinstance(params_copy[key], dict) or isinstance(params_copy[key], list):
                     continue
-                value = params_copy[key]
-                if isinstance(value, str):
-                    value = value.encode('utf8')
-                params_copy[key] = psycopg2.extensions.adapt(value).getquoted().decode('utf8')
+                adapted = psycopg2.extensions.adapt(params_copy[key])
+                if isinstance(params_copy[key], str):
+                    adapted.encoding = "utf-8"
+                params_copy[key] = adapted.getquoted().decode('utf8')
         else:
             params_copy = params
         return query % params_copy
@@ -99,18 +100,31 @@ class FileDB:
 if __name__ == '__main__':
     redis_host = os.environ.get('REDIS_HOST') or 'shared-redis'
     redis_port = os.environ.get('REDIS_PORT') or 6379
-    db = FileDB()
     redis = Redis(host=redis_host, port=redis_port)
     while True:
-        payload = json.loads(redis.brpop(['teacher_ratings'], timeout = 0)[1])['data']['node']
+        db = FileDB()
+        stored_value = redis.brpop(['teacher_ratings'], timeout = 0)[1].decode('utf8')
+        regex = re.compile(r'teacherId:(\d+),(.*)', re.DOTALL|re.MULTILINE)
+        match = re.match(regex, stored_value)
+
+        if not match:
+            continue
+
+        teacherId = match.group(1)
+
+        try:
+            payload = json.loads(match.group(2))['data']['node']
+        except Exception as e:
+            print('Invalid JSON response for %s' % teacherId, flush=True)
+            continue
+
         if not payload:
             continue
-        teacherId = payload['legacyId']
+
         try:
             print('Teacher added: %s' % teacherId, flush=True)
             enterTeacher(db, payload)
             redis.lpush('teacher_rating_sqls', db.get())
         except Exception as e:
             print('Failed adding teacher %s, error is: %s' % (teacherId, str(e)), flush=True)
-            redis.lpush('failed_teacher_rating_sqls', db.get())
             redis.hincrby('teacher_failure_count', teacherId, 1)

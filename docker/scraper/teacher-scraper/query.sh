@@ -12,10 +12,6 @@ input() {
     redis-cli -u $REDIS_CONNECTION brpop teachers 0 | grep -v '^teachers$'
 }
 
-error() {
-    redis-cli -u $REDIS_CONNECTION -x --raw lpush failed_teacher_ratings
-}
-
 incr_error_count() {
     redis-cli -u $REDIS_CONNECTION hincrby teacher_failure_count $1 1
 }
@@ -47,12 +43,11 @@ getTeacher() {
 while :; do
     teacher=$(input)
     output=$(getTeacher $teacher)
-    echo "$output" | output
+    echo "teacherId:$teacher,$output" | output
     if [ $? == 0 ]; then
         echo "Teacher added: $teacher"
     else
         echo "Failed to get teacher: $teacher"
-        echo "$output" | error
-	incr_error_count $teacher
+        incr_error_count $teacher
     fi
 done

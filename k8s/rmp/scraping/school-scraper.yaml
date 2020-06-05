@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: school-scraper
 spec:
-  replicas: 0
+  replicas: 10
   selector:
     matchLabels:
       app: school-scraper
