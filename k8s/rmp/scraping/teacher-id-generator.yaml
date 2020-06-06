@@ -25,10 +25,6 @@ spec:
       containers:
         - name: teacher-id-generator
           image: litcodes/teacher-id-generator
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
           imagePullPolicy: "Always"
           env:
           - name: BATCH_SIZE

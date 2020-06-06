@@ -12,7 +12,6 @@ def enterSchool(db, school):
     departments = school['departments']
     ratings = school['ratings']
 
-    db.run("--schoolId:%(legacyId)s", school)
     db.run("INSERT INTO school VALUES (%(legacyId)s, %(name)s, %(state)s, %(city)s) on conflict do nothing", school)
 
     for rating in ratings:
@@ -103,6 +102,7 @@ if __name__ == '__main__':
             continue
 
         schoolId = match.group(1)
+        db.run("--schoolId:%s", schoolId)
 
         try:
             payload = json.loads(match.group(2))

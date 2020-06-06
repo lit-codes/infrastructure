@@ -25,9 +25,9 @@ incr_error_count() {
 while :; do
     sql=$(input)
     echo "$sql" | output
-    teacherId=`echo $sql | grep -oP -- '--teacherId:\K\d+'
+    teacherId=`echo $sql | grep -oP -- '--teacherId:\K\d+'`
     if [ $? == 0 ]; then
-        echo "School $teacherId added"
+        echo "Teacher $teacherId added"
     else
         echo Failed to apply SQL for $teacherId
         incr_error_count $teacherId

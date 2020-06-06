@@ -10,7 +10,6 @@ from redis import Redis
 
 def enterTeacher(db, teacher):
     school = teacher['school']
-    db.run("--teacherId:%(legacyId)s", teacher)
     if school:
         teacher['schoolId'] = school['legacyId']
         db.run("INSERT INTO school VALUES (%(legacyId)s, %(name)s, %(state)s, %(city)s) on conflict do nothing", school)
@@ -58,14 +57,14 @@ def enterTeacher(db, teacher):
                 %(clarityRating)s,
                 %(class)s,
                 %(comment)s,
-                (select (case when %(courseType)s is null then null else (case when %(courseType)s > 2 then 1 else 0 end)::boolean) end),
+                (select (case when %(courseType)s is null then null else (case when %(courseType)s > 2 then 1 else 0 end)::boolean end)),
                 to_timestamp(%(date)s, 'YYYY-MM-DD hh24:mi:ss'),
                 %(difficultyRating)s,
                 %(grade)s,
                 %(helpfulRating)s,
                 %(isForOnlineClass)s,
                 %(ratingTags)s,
-                (select (case when %(textbookUse)s is null then null else (case when %(textbookUse)s > 2 then 1 else 0 end)::boolean) end),
+                (select (case when %(textbookUse)s is null then null else (case when %(textbookUse)s > 2 then 1 else 0 end)::boolean end)),
                 %(thumbsUpTotal)s,
                 %(thumbsDownTotal)s,
                 %(wouldTakeAgain)s::boolean,
@@ -111,6 +110,7 @@ if __name__ == '__main__':
             continue
 
         teacherId = match.group(1)
+        db.run("--teacherId:%s", teacherId)
 
         try:
             payload = json.loads(match.group(2))['data']['node']

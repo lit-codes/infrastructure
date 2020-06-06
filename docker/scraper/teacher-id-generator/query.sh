@@ -14,7 +14,7 @@
 : ${DB_CONNECTION:=postgres://$DB_HOST:$DB_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS}
 
 max_id() {
-    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" -c 'select max(id) from teacher' | grep -oP '^ \d+$'
+    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" -c 'select max(id) from teacher' | grep -oP '^\s*\K\d+$'
 }
 
 generateRange() {

@@ -26,8 +26,4 @@ spec:
       containers:
         - name: teacher-sql-generator
           image: litcodes/teacher-sql-generator
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
           imagePullPolicy: "Always"
