@@ -1,7 +1,7 @@
 #!/bin/bash
 
-: ${BATCH_SIZE:=10}
-: ${QUEUE_SIZE:=20}
+: ${BATCH_SIZE:=20}
+: ${EMPTY_QUEUE_THRESHOLD:=10}
 : ${FAILURE_THRESHOLD:=1}
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
@@ -23,7 +23,7 @@ generateRange() {
     id=$from
     ids=''
     size=0
-    while [ $size -lt $QUEUE_SIZE ];do
+    while [ $size -lt $BATCH_SIZE ];do
         error_count=`redis-cli -u $REDIS_CONNECTION hget school_failure_count $id | grep -oP '\d+'`
         echo $id $error_count
         : ${error_count:=0}
@@ -44,7 +44,7 @@ queueIsEmpty() {
     len_ratings=`redis-cli -u $REDIS_CONNECTION llen school_ratings | grep -oP '\d+'`
     len=`redis-cli -u $REDIS_CONNECTION llen schools | grep -oP '\d+'`
     (( total=$len + $len_ratings + $len_sqls ))
-    test $total -lt $QUEUE_SIZE
+    test $total -lt $EMPTY_QUEUE_THRESHOLD
     return $?
 }
 

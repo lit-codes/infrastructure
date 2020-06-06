@@ -27,7 +27,7 @@ spec:
           image: litcodes/school-id-generator
           imagePullPolicy: "Always"
           env:
-          - name: QUEUE_SIZE
-            value: '50'
           - name: BATCH_SIZE
-            value: '2'
+            value: '50'
+          - name: EMPTY_QUEUE_THRESHOLD
+            value: '12'
