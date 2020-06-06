@@ -102,6 +102,7 @@ if __name__ == '__main__':
             continue
 
         schoolId = match.group(1)
+        print('Generating SQL for school: %s' % schoolId)
         db.run("--schoolId:%s", schoolId)
 
         try:

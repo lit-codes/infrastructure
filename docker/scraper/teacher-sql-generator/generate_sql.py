@@ -110,6 +110,7 @@ if __name__ == '__main__':
             continue
 
         teacherId = match.group(1)
+        print('Generating SQL for teacher: %s' % teacherId)
         db.run("--teacherId:%s", teacherId)
 
         try:

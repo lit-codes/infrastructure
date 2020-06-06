@@ -42,6 +42,7 @@ getTeacher() {
 
 while :; do
     teacher=$(input)
+    echo Scraping teacher: $teacher
     output=$(getTeacher $teacher)
     echo "teacherId:$teacher,$output" | output
     if [ $? == 0 ]; then

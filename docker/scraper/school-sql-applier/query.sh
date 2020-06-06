@@ -24,8 +24,9 @@ incr_error_count() {
 
 while :; do
     sql=$(input)
-    echo "$sql" | output
     schoolId=`echo $sql | grep -oP -- '--schoolId:\K\d+'`
+    echo Applying SQL for school: $schoolId
+    echo "$sql" | output
     if [ $? == 0 ]; then
         echo "School $schoolId added"
     else

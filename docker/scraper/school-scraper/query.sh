@@ -65,6 +65,7 @@ getSchool() {
 
 while :; do
     school=$(input)
+    echo Scraping school: $school
     output=$(getSchool $school)
     echo "schoolId:$school,$output" | output
     if [ $? == 0 ]; then
