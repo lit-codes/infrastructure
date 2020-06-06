@@ -27,7 +27,7 @@ spec:
           image: litcodes/teacher-id-generator
           imagePullPolicy: "Always"
           env:
-          - name: BATCH_SIZE
-            value: '10'
           - name: QUEUE_SIZE
-            value: '6'
+            value: '50'
+          - name: BATCH_SIZE
+            value: '2'
