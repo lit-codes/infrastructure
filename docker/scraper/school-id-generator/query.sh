@@ -27,7 +27,7 @@ generateRange() {
         error_count=`redis-cli -u $REDIS_CONNECTION hget school_failure_count $id | grep -oP '\d+'`
         echo $id $error_count
         : ${error_count:=0}
-        if [ $error_count -gt $FAILURE_THRESHOLD ]; then
+        if [ $error_count -ge $FAILURE_THRESHOLD ]; then
             (( id+=1 ))
             continue
         fi

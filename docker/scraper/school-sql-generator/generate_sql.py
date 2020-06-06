@@ -98,9 +98,6 @@ if __name__ == '__main__':
         regex = re.compile(r'schoolId:(\d+),(.*)', re.DOTALL|re.MULTILINE)
         match = re.match(regex, stored_value)
 
-        if not match:
-            continue
-
         schoolId = match.group(1)
         print('Generating SQL for school: %s' % schoolId)
         db.run("--schoolId:%s", schoolId)
@@ -108,10 +105,12 @@ if __name__ == '__main__':
         try:
             payload = json.loads(match.group(2))
         except Exception as e:
+            redis.hincrby('school_failure_count', schoolId, 1)
             print('Invalid JSON response for %s' % schoolId, flush=True)
             continue
 
         if not payload:
+            redis.hincrby('school_failure_count', schoolId, 1)
             continue
 
         try:

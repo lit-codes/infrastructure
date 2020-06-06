@@ -106,9 +106,6 @@ if __name__ == '__main__':
         regex = re.compile(r'teacherId:(\d+),(.*)', re.DOTALL|re.MULTILINE)
         match = re.match(regex, stored_value)
 
-        if not match:
-            continue
-
         teacherId = match.group(1)
         print('Generating SQL for teacher: %s' % teacherId)
         db.run("--teacherId:%s", teacherId)
@@ -116,10 +113,12 @@ if __name__ == '__main__':
         try:
             payload = json.loads(match.group(2))['data']['node']
         except Exception as e:
+            redis.hincrby('teacher_failure_count', teacherId, 1)
             print('Invalid JSON response for %s' % teacherId, flush=True)
             continue
 
         if not payload:
+            redis.hincrby('teacher_failure_count', teacherId, 1)
             continue
 
         try:
