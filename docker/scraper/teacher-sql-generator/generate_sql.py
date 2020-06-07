@@ -123,6 +123,7 @@ if __name__ == '__main__':
 
         try:
             print('Teacher added: %s' % teacherId, flush=True)
+            payload['legacyId'] = teacherId
             enterTeacher(db, payload)
             redis.lpush('teacher_rating_sqls', db.get())
         except Exception as e:

@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: school-sql-generator
 spec:
-  replicas: 2
+  replicas: 8
   selector:
     matchLabels:
       app: school-sql-generator

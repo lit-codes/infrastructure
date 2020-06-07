@@ -115,6 +115,7 @@ if __name__ == '__main__':
 
         try:
             print('School added: %s' % schoolId, flush=True)
+            payload['legacyId'] = schoolId
             enterSchool(db, payload)
             redis.lpush('school_rating_sqls', db.get())
         except Exception as e:

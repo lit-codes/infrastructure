@@ -1,6 +1,7 @@
 #!/bin/bash
 
 : ${CACHE_DIR:=/tmp}
+: ${DATA_DIR:=/data}
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
 : ${REDIS_CONNECTION:=redis://$REDIS_HOST:$REDIS_PORT}
@@ -44,6 +45,10 @@ querySchool() {
 
 getSchool() {
     sid=$1
+    if [ -f $DATA_DIR/$sid ]; then
+        cat $DATA_DIR/$sid
+        return 0
+    fi
     for i in {1..10000}; do
         file=$CACHE_DIR/$sid-$i
         curl -o $file -fs https://www.ratemyprofessors.com/campusrating/paginatecampusRatings\?page\=$i\&sid\=$sid
@@ -55,7 +60,7 @@ getSchool() {
         if grep '"remaining":0' $file &>/dev/null; then
             cat $CACHE_DIR/$sid-* | jq -s 'reduce .[] as $s ([]; . + $s.ratings)|{ratings: .}' > $CACHE_DIR/$sid-flatten
             querySchool $sid |jq -s '.[0].data.node' > $CACHE_DIR/$sid-query
-            jq -s '.[0] + .[1]' $CACHE_DIR/$sid-flatten $CACHE_DIR/$sid-query
+            jq -s '.[0] + .[1]' $CACHE_DIR/$sid-flatten $CACHE_DIR/$sid-query | tee -a $DATA_DIR/$sid
             rm $CACHE_DIR/$sid-*
             return 0
         fi
