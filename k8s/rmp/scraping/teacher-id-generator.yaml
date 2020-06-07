@@ -30,4 +30,4 @@ spec:
           - name: BATCH_SIZE
             value: '800'
           - name: EMPTY_QUEUE_THRESHOLD
-            value: '1200'
+            value: '800'
