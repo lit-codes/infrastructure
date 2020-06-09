@@ -1,5 +1,6 @@
 #!/bin/bash
 
+: ${DATA_DIR:=/data}
 : ${REDIS_HOST:=shared-redis}
 : ${REDIS_PORT:=6379}
 : ${REDIS_CONNECTION:=redis://$REDIS_HOST:$REDIS_PORT}
@@ -12,16 +13,16 @@ input() {
     redis-cli -u $REDIS_CONNECTION brpop teachers 0 | grep -v '^teachers$'
 }
 
-error() {
-    redis-cli -u $REDIS_CONNECTION -x --raw lpush failed_teacher_ratings
-}
-
 incr_error_count() {
     redis-cli -u $REDIS_CONNECTION hincrby teacher_failure_count $1 1
 }
 
 getTeacher() {
     id=$1
+    if [ -f $DATA_DIR/$id ]; then
+        cat $DATA_DIR/$id
+        return 0
+    fi
     encoded_id=`echo -n Teacher-$id |base64`
     encoded_query=`perl -pe 's/\n/\\\\n/g' query.graphql`
     encoded_query=${encoded_query::-2}
@@ -41,18 +42,18 @@ getTeacher() {
         -H 'Accept-Language: en-US,en;q=0.9' \
         -H 'Cookie: ajs_user_id=null; ajs_group_id=null; ajs_anonymous_id=%22e330be45-a1d9-4f1c-9e3e-61800a141eb2%22; promotionIndex=0; ccpa-notice-viewed-02=true' \
         --data-binary "$encoded_query" \
-        --compressed
+        --compressed | tee -a $DATA_DIR/$id
 }
 
 while :; do
     teacher=$(input)
+    echo Scraping teacher: $teacher
     output=$(getTeacher $teacher)
-    echo "$output" | output
+    echo "teacherId:$teacher,$output" | output
     if [ $? == 0 ]; then
         echo "Teacher added: $teacher"
     else
         echo "Failed to get teacher: $teacher"
-        echo "$output" | error
-	incr_error_count $teacher
+        incr_error_count $teacher
     fi
 done

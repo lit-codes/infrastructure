@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: teacher-scraper
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: teacher-scraper
@@ -26,3 +26,26 @@ spec:
         - name: teacher-scraper
           image: litcodes/teacher-scraper
           imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir
+          env:
+            - name: DATA_DIR
+              value: /data/ratings
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: teacher-scraper-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teacher-scraper-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 30Gi

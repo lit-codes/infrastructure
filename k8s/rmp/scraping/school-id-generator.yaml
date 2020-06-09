@@ -28,6 +28,6 @@ spec:
           imagePullPolicy: "Always"
           env:
           - name: BATCH_SIZE
-            value: '1'
-          - name: QUEUE_SIZE
-            value: '1'
+            value: '50'
+          - name: EMPTY_QUEUE_THRESHOLD
+            value: '12'

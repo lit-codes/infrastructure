@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: school-scraper
 spec:
-  replicas: 0
+  replicas: 2
   selector:
     matchLabels:
       app: school-scraper
@@ -22,8 +22,30 @@ spec:
                 operator: In
                 values:
                 - worker-lg
-                - worker-md
       containers:
         - name: school-scraper
           image: litcodes/school-scraper
           imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir
+          env:
+            - name: DATA_DIR
+              value: /data/ratings-school
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: school-scraper-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: school-scraper-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 16Gi

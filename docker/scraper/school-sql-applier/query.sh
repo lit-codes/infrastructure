@@ -11,15 +11,11 @@
 : ${DB_CONNECTION:=postgres://$DB_HOST:$DB_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS}
 
 output() {
-    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION"
+    psql -v "ON_ERROR_STOP=1" -d "$DB_CONNECTION" >/dev/null
 }
 
 input() {
     redis-cli -u $REDIS_CONNECTION brpop school_rating_sqls 0 | grep -v '^school_rating_sqls$'
-}
-
-error() {
-    redis-cli -u $REDIS_CONNECTION -x --raw lpush failed_school_rating_sqls
 }
 
 incr_error_count() {
@@ -28,12 +24,13 @@ incr_error_count() {
 
 while :; do
     sql=$(input)
+    schoolId=`echo $sql | grep -oP -- '--schoolId:\K\d+'`
+    echo Applying SQL for school: $schoolId
     echo "$sql" | output
-    schoolId=`echo $sql | grep 'schoolId: \d*'| grep '\d*'`
     if [ $? == 0 ]; then
-        echo "School SQL added"
+        echo "School $schoolId added"
     else
-        echo "$sql" | error
-	incr_error_count $schoolId
+        echo Failed to apply SQL for $schoolId
+        incr_error_count $schoolId
     fi
 done

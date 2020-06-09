@@ -2,6 +2,7 @@ FROM alpine
 
 RUN apk update && apk add --no-cache wget
 RUN apk add --no-cache \
+grep \
 perl \
 curl \
 bash \
