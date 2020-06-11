@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shared-redis
+  name: rmp-db-dev
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
-      app: shared-redis
+      app: rmp-db-dev
   template:
     metadata:
       labels:
-        app: shared-redis
+        app: rmp-db-dev
     spec:
       affinity:
         nodeAffinity:
@@ -21,42 +21,48 @@ spec:
               - key: role
                 operator: In
                 values:
-                - worker-lg
+                - worker-md
       containers:
-        - name: shared-redis
-          image: redis
-          resources:
-            limits:
-              memory: "1Gi"
+        - name: rmp-db-dev
+          image: postgres:12
           imagePullPolicy: "IfNotPresent"
-          args: ["--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
-            - containerPort: 6379
+            - containerPort: 5432
           volumeMounts:
-            - mountPath: /data
+            - mountPath: /var/lib/postgresql/data
               name: data-dir 
+          env:
+            - name: POSTGRES_DB
+              value: rmp
+            - name: POSTGRES_USER
+              value: rmp
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: dbpassword
       volumes:
         - name: data-dir
           persistentVolumeClaim:
-            claimName: shared-redis-pvc
+            claimName: rmp-db-dev-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: shared-redis
+  name: rmp-db-dev
   labels:
-    app: shared-redis
+    app: rmp-db-dev
 spec:
   ports:
-  - port: 6379
+  - port: 5432
     protocol: TCP
   selector:
-    app: shared-redis
+    app: rmp-db-dev
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shared-redis-pvc
+  name: rmp-db-dev-pvc
   namespace: default
 spec:
   accessModes:
@@ -64,4 +70,4 @@ spec:
   storageClassName: local-path
   resources:
     requests:
-      storage: 15Gi
+      storage: 16Gi

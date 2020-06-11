@@ -27,6 +27,56 @@ def enterTeacher(db, teacher):
     """, teacher)
 
     db.run('set time zone UTC')
+    for edge in teacher['teacherRatingTags']['edges']:
+        tag = edge['node']
+        tag['teacherId'] = teacher['legacyId']
+        db.run("""
+            INSERT INTO teacher_tags (
+                id
+                name
+                count
+                teacher_id
+            ) VALUES (
+                %(legacyId)s
+                %(tagName)s
+                %(tagCount)s
+                %(teacherId)s
+            ) ON CONFLICT DO NOTHING
+        """, rating)
+    for edge in teacher['relatedTeachers']['edges']:
+        teacher = edge['node']
+        tag['teacherId'] = teacher['legacyId']
+        db.run("""
+            INSERT INTO related_teachers (
+                id
+                average_rating
+                first_name
+                last_name
+                teacher_id
+            ) VALUES (
+                %(legacyId)s
+                %(avgRating)s
+                %(firstName)s
+                %(lastName)s
+                %(teacherId)s
+            ) ON CONFLICT DO NOTHING
+        """, rating)
+    for edge in teacher['teacherRatingTags']['edges']:
+        tag = edge['node']
+        tag['teacherId'] = teacher['legacyId']
+        db.run("""
+            INSERT INTO teacher_tags (
+                id
+                name
+                count
+                teacher_id
+            ) VALUES (
+                %(legacyId)s
+                %(tagName)s
+                %(tagCount)s
+                %(teacherId)s
+            ) ON CONFLICT DO NOTHING
+        """, rating)
     for edge in teacher['ratings']['edges']:
         rating = edge['node']
         rating['teacherId'] = teacher['legacyId']
@@ -49,6 +99,7 @@ def enterTeacher(db, teacher):
                 helpful_votes,
                 not_helpful_votes,
                 is_retake_worthy,
+                is_retake_worthy_percentage,
                 teacher_id
             ) VALUES (
                 %(legacyId)s,
@@ -68,8 +119,21 @@ def enterTeacher(db, teacher):
                 %(thumbsUpTotal)s,
                 %(thumbsDownTotal)s,
                 %(wouldTakeAgain)s::boolean,
+                %(wouldTakeAgainPercent)s::boolean,
                 %(teacherId)s
-            ) on conflict do nothing
+            ) ON CONFLICT DO UPDATE SET (
+                admin_review_timestamp,
+                is_attendance_mandatory,
+                is_for_credit,
+                timestamp,
+                is_textbook_used
+            ) = (
+                EXCLUDED.admin_review_timestamp,
+                EXCLUDED.is_attendance_mandatory,
+                EXCLUDED.is_for_credit,
+                EXCLUDED.timestamp,
+                EXCLUDED.is_textbook_used
+            )
         """, rating)
 
 

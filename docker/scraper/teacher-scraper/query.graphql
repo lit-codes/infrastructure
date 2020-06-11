@@ -1,36 +1,41 @@
 query RatingsListQuery(
-  $count: Int!
   $id: ID!
-  $courseFilter: String
-  $cursor: String
+  $ratingCursor: String
 ) {
   node(id: $id) {
     __typename
     ... on Teacher {
-      ...RatingsList_teacher_4pguUW
+      ...RatingsList_teacher
     }
     id
   }
 }
 
-fragment RatingsList_teacher_4pguUW on Teacher {
+fragment RatingsList_teacher on Teacher {
   id
   legacyId
   department
   wouldTakeAgainPercent
+  teacherRatingTags {
+    ...RatingTags_rating_tags
+  }
+  relatedTeachers {
+    ...RelatedTeachers_related_teachers
+  }
   avgDifficulty
   avgRating
   school {
-    id
-    legacyId
-    name
-    city
-    state
+    ...School_school
   }
   firstName
   lastName
+  lockStatus
+  isSaved
   numRatings
-  ratings(first: $count, after: $cursor, courseFilter: $courseFilter) {
+  mostUsefulRating {
+    ...Rating_rating
+  }
+  ratings(first: 10000000, after: $ratingCursor) {
     edges {
       cursor
       node {
@@ -44,6 +49,14 @@ fragment RatingsList_teacher_4pguUW on Teacher {
       endCursor
     }
   }
+}
+
+fragment School_school on School {
+  id
+  legacyId
+  name
+  city
+  state
 }
 
 fragment Rating_rating on Rating {
@@ -75,6 +88,7 @@ fragment CourseMeta_rating on Rating {
   wouldTakeAgain
   grade
   textbookUse
+  isForCredit
   isForOnlineClass
 }
 
@@ -82,8 +96,16 @@ fragment RatingTags_rating on Rating {
   ratingTags
 }
 
+fragment RatingTags_rating_tags on TeacherRatingTags {
+  tagName
+  tagCount
+  legacyId
+  id
+}
+
 fragment RatingFooter_rating on Rating {
   id
+  maskCount
   comment
   adminReviewedAt
   flagStatus
@@ -95,5 +117,16 @@ fragment RatingFooter_rating on Rating {
     thumbsUp
     thumbsDown
     id
+  }
+}
+
+fragment RelatedTeachers_related_teachers on RelatedTeacher {
+  id
+  legacyId
+  avgRating
+  firstName
+  lastName
+  school {
+    ...School_school
   }
 }
