@@ -27,7 +27,45 @@ spec:
           image: litcodes/teacher-id-generator
           imagePullPolicy: "Always"
           env:
-          - name: BATCH_SIZE
-            value: '800'
-          - name: EMPTY_QUEUE_THRESHOLD
-            value: '800'
+            - name: REDIS_HOST
+              value: rmp-redis-dev
+            - name: DB_HOST
+              value: rmp-db-dev
+            - name: GENERATOR
+              value: currentRatings
+            - name: CACHE_DIR
+              value: /data
+            - name: BATCH_SIZE
+              value: '20'
+            - name: EMPTY_QUEUE_THRESHOLD
+              value: '10'
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: dbpassword
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: redispassword
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: teacher-id-generator-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teacher-id-generator-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi

@@ -26,12 +26,21 @@ spec:
         - name: teacher-scraper
           image: litcodes/teacher-scraper
           imagePullPolicy: "Always"
+          env:
+            - name: REDIS_HOST
+              value: rmp-redis-dev
+            - name: USE_CURSOR
+              value: 'true'
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: redispassword
+            - name: DATA_DIR
+              value: /data/ratings
           volumeMounts:
             - mountPath: /data
               name: data-dir
-          env:
-            - name: DATA_DIR
-              value: /data/ratings
       volumes:
         - name: data-dir
           persistentVolumeClaim:

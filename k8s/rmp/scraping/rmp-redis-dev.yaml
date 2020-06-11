@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shared-redis
+  name: rmp-redis-dev
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
-      app: shared-redis
+      app: rmp-redis-dev
   template:
     metadata:
       labels:
-        app: shared-redis
+        app: rmp-redis-dev
     spec:
       affinity:
         nodeAffinity:
@@ -21,42 +21,48 @@ spec:
               - key: role
                 operator: In
                 values:
-                - worker-lg
+                - worker-md
       containers:
-        - name: shared-redis
+        - name: rmp-redis-dev
           image: redis
           resources:
             limits:
-              memory: "1Gi"
+              memory: "500Mi"
           imagePullPolicy: "IfNotPresent"
-          args: ["--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
+          args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
             - containerPort: 6379
+          env:
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: redispassword
           volumeMounts:
             - mountPath: /data
               name: data-dir 
       volumes:
         - name: data-dir
           persistentVolumeClaim:
-            claimName: shared-redis-pvc
+            claimName: rmp-redis-dev-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: shared-redis
+  name: rmp-redis-dev
   labels:
-    app: shared-redis
+    app: rmp-redis-dev
 spec:
   ports:
   - port: 6379
     protocol: TCP
   selector:
-    app: shared-redis
+    app: rmp-redis-dev
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shared-redis-pvc
+  name: rmp-redis-dev-pvc
   namespace: default
 spec:
   accessModes:
