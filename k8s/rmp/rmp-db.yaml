@@ -13,8 +13,15 @@ spec:
       labels:
         app: rmp-db
     spec:
-      nodeSelector:
-        role: worker-md
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-md
       containers:
         - name: rmp-db
           image: postgres:12

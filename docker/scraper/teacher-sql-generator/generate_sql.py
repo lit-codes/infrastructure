@@ -9,6 +9,8 @@ import psycopg2
 from redis import Redis
 
 def enterTeacher(db, teacher):
+    db.run('set time zone UTC')
+
     school = teacher['school']
     if school:
         teacher['schoolId'] = school['legacyId']
@@ -23,60 +25,41 @@ def enterTeacher(db, teacher):
             %(lastName)s,
             (select id from department where name = %(department)s),
             %(schoolId)s
-        ) on conflict do nothing
+        ) ON CONFLICT DO NOTHING
     """, teacher)
 
-    db.run('set time zone UTC')
-    for edge in teacher['teacherRatingTags']['edges']:
-        tag = edge['node']
+    for tag in teacher['teacherRatingTags']:
         tag['teacherId'] = teacher['legacyId']
         db.run("""
             INSERT INTO teacher_tags (
-                id
-                name
-                count
+                id,
+                name,
+                count,
                 teacher_id
             ) VALUES (
-                %(legacyId)s
-                %(tagName)s
-                %(tagCount)s
+                %(legacyId)s,
+                %(tagName)s,
+                %(tagCount)s,
                 %(teacherId)s
-            ) ON CONFLICT DO NOTHING
-        """, rating)
-    for edge in teacher['relatedTeachers']['edges']:
-        teacher = edge['node']
-        tag['teacherId'] = teacher['legacyId']
+            ) ON CONFLICT (id) DO UPDATE SET (
+                count
+            ) = ROW(
+                EXCLUDED.count
+            )
+        """, tag)
+
+    for related_teacher in teacher['relatedTeachers']:
+        related_teacher['teacherId'] = teacher['legacyId']
         db.run("""
             INSERT INTO related_teachers (
-                id
-                average_rating
-                first_name
-                last_name
-                teacher_id
+                teacher_id,
+                related_teacher_id
             ) VALUES (
+                %(teacherId)s,
                 %(legacyId)s
-                %(avgRating)s
-                %(firstName)s
-                %(lastName)s
-                %(teacherId)s
             ) ON CONFLICT DO NOTHING
-        """, rating)
-    for edge in teacher['teacherRatingTags']['edges']:
-        tag = edge['node']
-        tag['teacherId'] = teacher['legacyId']
-        db.run("""
-            INSERT INTO teacher_tags (
-                id
-                name
-                count
-                teacher_id
-            ) VALUES (
-                %(legacyId)s
-                %(tagName)s
-                %(tagCount)s
-                %(teacherId)s
-            ) ON CONFLICT DO NOTHING
-        """, rating)
+        """, related_teacher)
+
     for edge in teacher['ratings']['edges']:
         rating = edge['node']
         rating['teacherId'] = teacher['legacyId']
@@ -99,7 +82,6 @@ def enterTeacher(db, teacher):
                 helpful_votes,
                 not_helpful_votes,
                 is_retake_worthy,
-                is_retake_worthy_percentage,
                 teacher_id
             ) VALUES (
                 %(legacyId)s,
@@ -108,7 +90,7 @@ def enterTeacher(db, teacher):
                 %(clarityRating)s,
                 %(class)s,
                 %(comment)s,
-                (select (case when %(courseType)s is null then null else (case when %(courseType)s > 2 then 1 else 0 end)::boolean end)),
+                %(isForCredit)s::boolean,
                 to_timestamp(%(date)s, 'YYYY-MM-DD hh24:mi:ss'),
                 %(difficultyRating)s,
                 %(grade)s,
@@ -119,15 +101,14 @@ def enterTeacher(db, teacher):
                 %(thumbsUpTotal)s,
                 %(thumbsDownTotal)s,
                 %(wouldTakeAgain)s::boolean,
-                %(wouldTakeAgainPercent)s::boolean,
                 %(teacherId)s
-            ) ON CONFLICT DO UPDATE SET (
+            ) ON CONFLICT (id) DO UPDATE SET (
                 admin_review_timestamp,
                 is_attendance_mandatory,
                 is_for_credit,
                 timestamp,
                 is_textbook_used
-            ) = (
+            ) = ROW(
                 EXCLUDED.admin_review_timestamp,
                 EXCLUDED.is_attendance_mandatory,
                 EXCLUDED.is_for_credit,
@@ -163,7 +144,8 @@ class FileDB:
 if __name__ == '__main__':
     redis_host = os.environ.get('REDIS_HOST') or 'shared-redis'
     redis_port = os.environ.get('REDIS_PORT') or 6379
-    redis = Redis(host=redis_host, port=redis_port)
+    redis_pass = os.environ.get('REDIS_PASS') or None
+    redis = Redis(host=redis_host, port=redis_port, password=redis_pass)
     while True:
         db = FileDB()
         stored_value = redis.brpop(['teacher_ratings'], timeout = 0)[1].decode('utf8')

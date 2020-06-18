@@ -21,13 +21,13 @@ spec:
               - key: role
                 operator: In
                 values:
-                - worker-md
+                - worker-lg
       containers:
         - name: rmp-redis-dev
           image: redis
           resources:
             limits:
-              memory: "500Mi"
+              memory: "1Gi"
           imagePullPolicy: "IfNotPresent"
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
@@ -70,4 +70,4 @@ spec:
   storageClassName: local-path
   resources:
     requests:
-      storage: 15Gi
+      storage: 2Gi

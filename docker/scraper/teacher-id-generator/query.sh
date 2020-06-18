@@ -1,12 +1,14 @@
 #!/bin/bash
 
-: ${GENERATOR:=sequentialIds}
+: ${GENERATOR:=currentTeachers}
+#  Generators:
+## currentTeachers: Get all ratings for the current teachers in the database
+## sequentialIds: Generate IDs from 1 to MAX_GENERATED_ID, and get ratings for all
+## updateRatings: Update the existing ratings, do not change old ratings
 : ${BATCH_SIZE:=20}
 : ${EMPTY_QUEUE_THRESHOLD:=10}
-: ${FAILURE_THRESHOLD:=1}
-: ${CACHE_DIR:=/dev/shm/}
+: ${CACHE_DIR:=/data/}
 : ${SLEEP_FULL_QUEUE:=1}
-: ${SLEEP_EMPTY_QUEUE:=10}
 : ${MAX_GENERATED_ID:=2500000}
 
 : ${REDIS_HOST:=shared-redis}
@@ -31,6 +33,17 @@ maxId() {
     $PSQL -c 'SELECT max(id) FROM teacher' | xargs
 }
 
+getCurrentTeachers() {
+    $PSQL <<'EOQ'
+    SELECT array_to_json(array_agg(row_to_json(t_to_tr))) FROM (
+        SELECT id AS "teacherId"
+          FROM teacher
+      GROUP BY id
+      ORDER BY id
+    ) AS t_to_tr;
+EOQ
+}
+
 getRatingCursors() {
     $PSQL <<'EOQ'
     SELECT array_to_json(array_agg(row_to_json(t_to_tr))) FROM (
@@ -44,7 +57,11 @@ getRatingCursors() {
 EOQ
 }
 
-currentRatings() {
+currentTeachers() {
+    getCurrentTeachers | jq -c '.[]'
+}
+
+updateRatings() {
     getRatingCursors | jq -c '.[]'
 }
 
@@ -55,13 +72,13 @@ sequentialIds() {
 }
 
 nextId() {
-    generator=${1:-sequentialIds}
+    generator=${1:-currentTeachers}
     RATINGS=$CACHE_DIR/rating_cursors
     BATCH=$CACHE_DIR/batch
 
     if [ ! -e $RATINGS ];then
-	$generator > $RATINGS
-	echo > $BATCH
+        $generator > $RATINGS
+        echo > $BATCH
     fi
 
 
@@ -79,17 +96,11 @@ getNextBatch() {
     ids=''
     size=0
     while [ $size -lt $BATCH_SIZE ];do
-	payload=`nextId $generator`
+        payload=`nextId $generator`
         id=`echo $payload | jq '.teacherId'`
-	if [ -z "$id" ];then
-	    echo "$ids"
-	    return 1
-        fi
-        error_count=`$REDIS hget teacher_failure_count $id | grep -oP '\d+'`
-        warn $id $error_count
-        : ${error_count:=0}
-        if [ $error_count -ge $FAILURE_THRESHOLD ]; then
-            continue
+        if [ -z "$id" ];then
+            echo "$ids"
+            return 1
         fi
         ids+=" $payload"
         (( size+=1 ))
@@ -118,12 +129,9 @@ queueIsEmpty() {
     return $?
 }
 
-while :; do
-    while queueIsEmpty; do
-        if ! generateRange $GENERATOR; then
-	    exit 0
-	fi
-        sleep $SLEEP_FULL_QUEUE
-    done
-    sleep $SLEEP_EMPTY_QUEUE
+while queueIsEmpty; do
+    if ! generateRange $GENERATOR; then
+        exit 0
+    fi
+    sleep $SLEEP_FULL_QUEUE
 done
