@@ -15,12 +15,11 @@ fragment RatingsList_teacher on Teacher {
   id
   legacyId
   department
-  wouldTakeAgainPercent
   teacherRatingTags {
     ...RatingTags_rating_tags
   }
   relatedTeachers {
-    ...RelatedTeachers_related_teachers
+    legacyId
   }
   avgDifficulty
   avgRating
@@ -29,12 +28,7 @@ fragment RatingsList_teacher on Teacher {
   }
   firstName
   lastName
-  lockStatus
-  isSaved
   numRatings
-  mostUsefulRating {
-    ...Rating_rating
-  }
   ratings(first: 10000000, after: $ratingCursor) {
     edges {
       cursor
@@ -100,12 +94,10 @@ fragment RatingTags_rating_tags on TeacherRatingTags {
   tagName
   tagCount
   legacyId
-  id
 }
 
 fragment RatingFooter_rating on Rating {
   id
-  maskCount
   comment
   adminReviewedAt
   flagStatus
@@ -117,16 +109,5 @@ fragment RatingFooter_rating on Rating {
     thumbsUp
     thumbsDown
     id
-  }
-}
-
-fragment RelatedTeachers_related_teachers on RelatedTeacher {
-  id
-  legacyId
-  avgRating
-  firstName
-  lastName
-  school {
-    ...School_school
   }
 }

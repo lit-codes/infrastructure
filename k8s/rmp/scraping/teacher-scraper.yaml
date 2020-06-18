@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: teacher-scraper
 spec:
-  replicas: 2
+  replicas: 8
   selector:
     matchLabels:
       app: teacher-scraper
@@ -29,8 +29,7 @@ spec:
           env:
             - name: REDIS_HOST
               value: rmp-redis-dev
-            - name: USE_CURSOR
-              value: 'true'
+              # Set USE_CURSOR to to true to update teachers from cursor
             - name: REDIS_PASS
               valueFrom:
                 secretKeyRef:

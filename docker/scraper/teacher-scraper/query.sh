@@ -65,18 +65,18 @@ while :; do
     if [ -n "$USE_CURSOR" ]; then
         warn Scraping teacher: $teacher_id Rating: $rating_cursor
         output=$(getTeacher $teacher_id $rating_cursor)
-	ratings_count=`echo -e "$output"|jq -c '.data.node.ratings.edges | length'`
-	if [ $ratings_count -gt 0 ]; then
-	    warn "New ratings found for $teacher_id Ratings: $rating_cursor"
+        ratings_count=`echo -e "$output"|jq -c '.data.node.ratings.edges | length'`
+        if [ $ratings_count -gt 0 ]; then
+            warn "New ratings found for $teacher_id Ratings: $rating_cursor"
             echo "teacherId:$teacher_id,$output" | output
-	fi
+        fi
     else
         warn Scraping teacher: $teacher_id
         output=$(getTeacher $teacher_id)
         echo "teacherId:$teacher_id,$output" | output
     fi
     if [ $? == 0 ]; then
-        warn "Teacher added: $teacher_id"
+        warn "Success for: $teacher_id"
     else
         warn "Failed to get teacher: $teacher_id"
         incr_error_count $teacher_id

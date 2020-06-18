@@ -31,14 +31,20 @@ spec:
               value: rmp-redis-dev
             - name: DB_HOST
               value: rmp-db-dev
+            - name: DB_USER
+              value: rmp
             - name: GENERATOR
-              value: currentRatings
+              #  Generators:
+              ## currentTeachers: Get all ratings for the current teachers in the database
+              ## sequentialIds: Generate IDs from 1 to MAX_GENERATED_ID, and get ratings for all
+              ## updateRatings: Update the existing ratings, do not change old ratings
+              value: currentTeachers
             - name: CACHE_DIR
               value: /data
             - name: BATCH_SIZE
-              value: '20'
+              value: '256'
             - name: EMPTY_QUEUE_THRESHOLD
-              value: '10'
+              value: '128'
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:

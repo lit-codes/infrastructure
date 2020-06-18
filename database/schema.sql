@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.2 (Ubuntu 12.2-4)
--- Dumped by pg_dump version 12.2 (Ubuntu 12.2-4)
+-- Dumped from database version 12.3 (Debian 12.3-1.pgdg100+1)
+-- Dumped by pg_dump version 12.3 (Debian 12.3-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -45,6 +45,40 @@ CREATE TABLE public.department (
 
 
 ALTER TABLE public.department OWNER TO postgres;
+
+--
+-- Name: related_teachers; Type: TABLE; Schema: public; Owner: rmp
+--
+
+CREATE TABLE public.related_teachers (
+    teacher_id integer NOT NULL,
+    related_teacher_id integer
+);
+
+
+ALTER TABLE public.related_teachers OWNER TO rmp;
+
+--
+-- Name: related_teachers_teacher_id_seq; Type: SEQUENCE; Schema: public; Owner: rmp
+--
+
+CREATE SEQUENCE public.related_teachers_teacher_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.related_teachers_teacher_id_seq OWNER TO rmp;
+
+--
+-- Name: related_teachers_teacher_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: rmp
+--
+
+ALTER SEQUENCE public.related_teachers_teacher_id_seq OWNED BY public.related_teachers.teacher_id;
+
 
 --
 -- Name: school_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -232,6 +266,49 @@ ALTER SEQUENCE public.teacher_ratings_id_seq OWNED BY public.teacher_ratings.id;
 
 
 --
+-- Name: teacher_tags; Type: TABLE; Schema: public; Owner: rmp
+--
+
+CREATE TABLE public.teacher_tags (
+    id integer NOT NULL,
+    name text,
+    count integer,
+    teacher_id integer
+);
+
+
+ALTER TABLE public.teacher_tags OWNER TO rmp;
+
+--
+-- Name: teacher_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: rmp
+--
+
+CREATE SEQUENCE public.teacher_tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.teacher_tags_id_seq OWNER TO rmp;
+
+--
+-- Name: teacher_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: rmp
+--
+
+ALTER SEQUENCE public.teacher_tags_id_seq OWNED BY public.teacher_tags.id;
+
+
+--
+-- Name: related_teachers teacher_id; Type: DEFAULT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.related_teachers ALTER COLUMN teacher_id SET DEFAULT nextval('public.related_teachers_teacher_id_seq'::regclass);
+
+
+--
 -- Name: school_departments id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -243,6 +320,13 @@ ALTER TABLE ONLY public.school_departments ALTER COLUMN id SET DEFAULT nextval('
 --
 
 ALTER TABLE ONLY public.teacher_ratings ALTER COLUMN id SET DEFAULT nextval('public.teacher_ratings_id_seq'::regclass);
+
+
+--
+-- Name: teacher_tags id; Type: DEFAULT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.teacher_tags ALTER COLUMN id SET DEFAULT nextval('public.teacher_tags_id_seq'::regclass);
 
 
 --
@@ -259,6 +343,14 @@ ALTER TABLE ONLY public.school_ratings
 
 ALTER TABLE ONLY public.department
     ADD CONSTRAINT department_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: related_teachers related_teachers_pkey; Type: CONSTRAINT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.related_teachers
+    ADD CONSTRAINT related_teachers_pkey PRIMARY KEY (teacher_id);
 
 
 --
@@ -294,11 +386,42 @@ ALTER TABLE ONLY public.teacher_ratings
 
 
 --
+-- Name: teacher_tags teacher_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.teacher_tags
+    ADD CONSTRAINT teacher_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: related_teachers unique_related_teachers; Type: CONSTRAINT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.related_teachers
+    ADD CONSTRAINT unique_related_teachers UNIQUE (teacher_id, related_teacher_id);
+
+
+--
+-- Name: ratings_teacher_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX ratings_teacher_idx ON public.teacher_ratings USING btree (teacher_id);
+
+
+--
 -- Name: school_ratings campus_rating_school_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.school_ratings
     ADD CONSTRAINT campus_rating_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.school(id);
+
+
+--
+-- Name: related_teachers related_teachers_related_teacher_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.related_teachers
+    ADD CONSTRAINT related_teachers_related_teacher_id_fkey FOREIGN KEY (related_teacher_id) REFERENCES public.teacher(id);
 
 
 --
@@ -339,6 +462,14 @@ ALTER TABLE ONLY public.teacher_ratings
 
 ALTER TABLE ONLY public.teacher
     ADD CONSTRAINT teacher_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.school(id);
+
+
+--
+-- Name: teacher_tags teacher_tags_teacher_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: rmp
+--
+
+ALTER TABLE ONLY public.teacher_tags
+    ADD CONSTRAINT teacher_tags_teacher_id_fkey FOREIGN KEY (teacher_id) REFERENCES public.teacher(id);
 
 
 --
