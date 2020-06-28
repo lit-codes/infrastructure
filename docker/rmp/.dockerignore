@@ -1,7 +1,0 @@
-Dockerfile
-node_modules
-.env
-dashboard-app/node_modules
-dashboard-app/build
-dashboard-app/README.md
-build.sh
