@@ -23,6 +23,7 @@
   },
   "homepage": "https://gitlab.com/lit-codes/rmp-fe#readme",
   "dependencies": {
+    "@cubejs-client/core": "^0.19.37",
     "@google-web-components/google-chart": "^3.4.0",
     "chart.js": "^2.9.3",
     "chartjs-plugin-datalabels": "^0.7.0"
