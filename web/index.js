@@ -37,6 +37,10 @@ app.get('/login', passport.authenticate('basic'), (req, res) => {
 });
 
 app.use((req, res, next) => {
+  /* TODO: pass token for development too */
+  if (process.env.NODE_ENV !== 'production') {
+    return next();
+  }
   if (!req.user) {
     res.redirect('/login');
     return;
@@ -57,6 +61,10 @@ if (process.env.NODE_ENV === 'production') {
 
 const serverCore = CubejsServerCore.create({
   checkAuth: (req, auth) => {
+    /* TODO: pass token for development too */
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
     if (!req.user) {
       throw new Error(`Unauthorized`);
     }
