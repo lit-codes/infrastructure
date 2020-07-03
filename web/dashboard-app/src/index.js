@@ -1,6 +1,8 @@
 /* jshint esversion: 8 */
 /* jshint undef:true */
 
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import cubejs, { ResultSet } from '@cubejs-client/core';
 
 // let apiTokenPromise;
@@ -181,7 +183,8 @@ function loadTeacherDataFromCube() {
     {
       console.log('Resp 4 ratings');
       const teacher1 = parseTeacher(rs1.loadResponse);
-      drawPieChartForTeacher(teacher1);
+      // drawPieChartForTeacher(teacher1);
+      drawPieChartForTeacherChartJS(teacher1);
     }
   })();
   (async () => {
@@ -190,7 +193,8 @@ function loadTeacherDataFromCube() {
     {
       console.log('Resp 4 ratings over time');
       const teacher2 = parseTeacher(rs2.loadResponse);
-      drawBarCHartForTeacher(teacher2);
+      // drawBarCHartForTeacher(teacher2);
+      drawBarChartForTeacherChartJS(teacher2);
     }
   })();
 }
@@ -272,4 +276,117 @@ function drawBarCHartForTeacher(teacher2) {
     // dt2.unshift(['Rating', 'Count']);
     drawChart('ColumnChart', dt2, 'chart_div2', ColumnChartOptions);
   }
+}
+
+window.chartColors = {
+  red: 'rgb(255, 99, 132)',
+  orange: 'rgb(255, 159, 64)',
+  yellow: 'rgb(255, 205, 86)',
+  green: 'green',
+  darkgreen: 'darkgreen',
+  blue: 'rgb(54, 162, 235)',
+  purple: 'rgb(153, 102, 255)',
+  grey: 'rgb(201, 203, 207)'
+};
+
+function drawPieChartForTeacherChartJS(teacher) {
+  const data = {
+    datasets: [{
+      data: [teacher.ratings[0].bad, teacher.ratings[0].good, teacher.ratings[0].neutral],
+
+      backgroundColor: [
+        window.chartColors.darkgreen,
+        window.chartColors.green,
+        window.chartColors.blue,
+      ],
+      label: 'Teacher1'
+    }],
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: [
+      'Bad',
+      'Good',
+      'Neutral'
+    ]
+  };
+
+  const ctx = document.getElementById('teacherPieChart').getContext('2d');
+
+  const myChart = new Chart(ctx, {
+    plugins: [ChartDataLabels],
+    type: 'pie',
+    data,
+    options: {
+      plugins: {
+        // Change options for ALL labels of THIS CHART
+        datalabels: {
+          color: 'white',
+        },
+      },
+      // responsive: true
+    },
+  });
+}
+
+function drawBarChartForTeacherChartJS(teacher) {
+  const ctx = document.getElementById('teacherBarChart').getContext('2d');
+  let labels = [];
+  let bads = [];
+  let goods = [];
+  let neutrals = [];
+  teacher.ratings.forEach((r) => {
+    labels.push(r.label.substring(0, 4));
+    bads.push(r.bad);
+    goods.push(r.good);
+    neutrals.push(r.neutral);
+    // data.push([r.label.substring(0, 4), r.bad, r.good, r.neutral]);
+  });
+  const myChart = new Chart(ctx, {
+    plugins: [ChartDataLabels],
+    type: 'bar',
+    // data: [[5, 6], [7, 8]],
+    data: {
+      labels: labels,
+      datasets: [
+        // [
+        {
+          // type:'bar',
+          label: 'Bad',
+          data: bads,
+          // stack: 2010,
+          backgroundColor: 'darkgreen',
+        },
+        {
+          // type: 'bar',
+          label: 'Good',
+          data: goods,
+          // stack: 2011,
+          backgroundColor: 'green'
+        },
+        {
+          // type: 'bar',
+          label: 'Neutral',
+          data: neutrals,
+          // stack: 2011,
+          backgroundColor: 'skyblue'
+        },
+      ]
+    },
+    options: {
+      plugins: {
+        // Change options for ALL labels of THIS CHART
+        datalabels: {
+          color: 'white',
+        },
+      },
+      scales: {
+        xAxes: [{
+          stacked: true
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+      // responsive: true
+    },
+  });
 }
