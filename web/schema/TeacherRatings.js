@@ -9,70 +9,24 @@ cube(`TeacherRatings`, {
   },
   
   measures: {
-    badRatingPercentage: {
-      sql: `${badRatingCount} / 100`,
-      type: `number`,
-      format: `percent`
+    count: {
+      type: `count`,
+      drillMembers: [className, id, adminReviewTimestamp, timestamp]
     },
     badRatingCount: {
       type: `count`,
-      drillMembers: [id, badRating]
+      drillMembers: [className, id, adminReviewTimestamp, timestamp],
+      filters: [
+        {
+          sql: `${CUBE.isRetakeWorthy} or ${CUBE.clarity} < 2`
+        }
+      ],
     },
-    count: {
-      type: `count`,
-      drillMembers: [id, className, timestamp, adminReviewTimestamp]
-    }
   },
   
   dimensions: {
-    badRating: {
-      type: `boolean`,
-      case: {
-        when: [
-          { sql: `${CUBE}.comment like '%bad%'`, label: `t` },
-          { sql: `${CUBE}.comment like '%sh*t%'`, label: `t` },
-          { sql: `${CUBE}.comment like '%aweful%'`, label: `t` },
-          { sql: `${CUBE}.comment like '%unpleasant%'`, label: `t` },
-          { sql: `${CUBE}.comment like '%useless%'`, label: `t` },
-          { sql: `${CUBE}.comment like '%boring%'`, label: `t` },
-          { sql: `${CUBE}.is_retake_worthy = 'f'`, label: `t` },
-        ],
-        else: { label: `f` }
-      }
-    },
-    isForCredit: {
-      sql: `is_for_credit`,
-      type: `string`
-    },
-    
-    comment: {
-      sql: `comment`,
-      type: `string`
-    },
-    
-    isRetakeWorthy: {
-      sql: `is_retake_worthy`,
-      type: `string`
-    },
-    
-    grade: {
-      sql: `grade`,
-      type: `string`
-    },
-    
-    id: {
-      sql: `id`,
-      type: `number`,
-      primaryKey: true
-    },
-    
-    isAttendanceMandatory: {
-      sql: `is_attendance_mandatory`,
-      type: `string`
-    },
-    
-    isTextbookUsed: {
-      sql: `is_textbook_used`,
+    isOnlineClass: {
+      sql: `is_online_class`,
       type: `string`
     },
     
@@ -86,18 +40,59 @@ cube(`TeacherRatings`, {
       type: `string`
     },
     
-    isOnlineClass: {
-      sql: `is_online_class`,
+    isAttendanceMandatory: {
+      sql: `is_attendance_mandatory`,
       type: `string`
     },
     
-    timestamp: {
-      sql: `timestamp`,
-      type: `time`
+    isTextbookUsed: {
+      sql: `is_textbook_used`,
+      type: `string`
+    },
+    
+    id: {
+      sql: `id`,
+      type: `number`,
+      primaryKey: true
+    },
+    
+    difficulty: {
+      sql: `difficulty`,
+      type: `number`,
+    },
+    
+    clarity: {
+      sql: `clarity`,
+      type: `number`,
+    },
+    
+    isRetakeWorthy: {
+      sql: `is_retake_worthy`,
+      type: `string`
+    },
+    
+    grade: {
+      sql: `grade`,
+      type: `string`
+    },
+    
+    comment: {
+      sql: `comment`,
+      type: `string`
+    },
+    
+    isForCredit: {
+      sql: `is_for_credit`,
+      type: `string`
     },
     
     adminReviewTimestamp: {
       sql: `admin_review_timestamp`,
+      type: `time`
+    },
+    
+    timestamp: {
+      sql: `timestamp`,
       type: `time`
     }
   }

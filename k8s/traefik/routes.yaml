@@ -8,7 +8,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`rmp.lit.codes`)
+  - match: HostRegexp(`rmp.lit.codes`, `chartlib.com`, `{subdomain:[a-z]+}.chartlib.com`)
     kind: Rule
     services:
     - name: rmp
