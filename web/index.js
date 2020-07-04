@@ -74,6 +74,10 @@ const serverCore = CubejsServerCore.create({
 
 serverCore.initApp(app);
 
+app.use((req, res) => {
+    res.redirect(`/?tid=${req.query.tid}`);
+});
+
 const port = process.env.PORT || 4000;
 const server = http.createServer(app);
 

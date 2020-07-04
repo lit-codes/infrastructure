@@ -5,19 +5,17 @@ export function drawOverallRatings(chartjs, teacher) {
     const chartType = 'pie';
     const data = {
       datasets: [{
-        data: [teacher.badRatingCount, teacher.goodRatingCount, teacher.neutralRatingCount],
+        data: [teacher.badRatingCount, teacher.goodRatingCount],
         backgroundColor: [
-          chartColors.darkgreen,
+          chartColors.red,
           chartColors.green,
-          chartColors.blue,
         ],
-        label: 'Teacher1',
+        label: 'Teacher',
       }],
       // These labels appear in the legend and in the tooltips when hovering different arcs
       labels: [
         'Bad',
         'Good',
-        'Neutral',
       ],
     };
     const contID = 'teacherPieChart';

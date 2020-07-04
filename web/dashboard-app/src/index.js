@@ -2,8 +2,8 @@ import cubejs from '@cubejs-client/core';
 import { loadTeacher, loadTeacherRatings } from './cubes';
 import { drawUI } from './ui';
 
-// initialize cubejs instance with API Token and API URL
-const API_URL = 'http://localhost:4000';
+// Replaces 3000 to 4000 as a hack for development servers
+const API_URL = document.location.origin.replace('3000', '4000');
 let authPromise;
 
 async function authenticate(url) {
@@ -17,6 +17,7 @@ async function authenticate(url) {
   return json.token;
 }
 
+// Initialize cubejs instance with API Token and API URL
 const api = cubejs(async () => {
   // Only authenticate once
   // TODO: May need JWT token renewal
@@ -32,10 +33,11 @@ function getIdFromSearchString() {
   const searchString = document.location.search;
   const match = searchString.match(/\?tid=(\d+)/);
   if (!match) {
-    throw 'Please set tid= in the URL';
-  } else {
-    return match[1];
+    // Default to Andrew Ng
+    document.location.search = 'tid=545784';
+    return undefined;
   }
+  return match[1];
 }
 
 (async function main() {
