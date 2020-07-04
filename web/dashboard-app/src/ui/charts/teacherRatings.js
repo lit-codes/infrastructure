@@ -1,19 +1,61 @@
-function teacherRatingsToDataTable(teacherRatings) {
-  const data = [['Quality', 'Bad', 'Good', 'Neutral']];
-  teacherRatings.forEach((r) => {
-    data.push([r.label.substring(0, 4), r.bad, r.good, r.neutral]);
-  });
-  // ['Bad', teacher.bad],
-  // ['Good', teacher.good],
-  // ['Neutral', teacher.neutral],
-  return data;
-}
-
-export function drawRatingsOverTime(googleCharts, teacherRatings) {
-  const ColumnChartOptions = { is3D: false, isStacked: true, slices: { 0: { color: 'darkGreen' }, 1: { color: 'green' }, 2: { color: 'blue' } } };
+export function drawRatingsOverTime(chartjs, teacherRatings) {
   if (teacherRatings !== null) {
-    const dt2 = teacherRatingsToDataTable(teacherRatings);
-    // dt2.unshift(['Rating', 'Count']);
-    googleCharts.drawChart('ColumnChart', dt2, 'chart_div2', ColumnChartOptions);
+    const labels = [];
+    const bads = [];
+    const goods = [];
+    const neutrals = [];
+    teacherRatings.forEach((r) => {
+      labels.push(r.label.substring(0, 4));
+      bads.push(r.bad);
+      goods.push(r.good);
+      neutrals.push(r.neutral);
+    });
+    const data = {
+      labels,
+      datasets: [
+        // [
+        {
+          // type:'bar',
+          label: 'Bad',
+          data: bads,
+          // stack: 2010,
+          backgroundColor: 'darkgreen',
+        },
+        {
+          // type: 'bar',
+          label: 'Good',
+          data: goods,
+          // stack: 2011,
+          backgroundColor: 'green',
+        },
+        {
+          // type: 'bar',
+          label: 'Neutral',
+          data: neutrals,
+          // stack: 2011,
+          backgroundColor: 'skyblue',
+        },
+      ],
+    };
+    const chartType = 'bar';
+    const contID = 'teacherBarChart';
+    const options = {
+      plugins: {
+        // Change options for ALL labels of THIS CHART
+        datalabels: {
+          color: 'white',
+        },
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+        }],
+        yAxes: [{
+          stacked: true,
+        }],
+      },
+      // responsive: true
+    };
+    chartjs.drawChart(chartType, data, contID, options);
   }
 }
