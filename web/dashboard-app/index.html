@@ -5,6 +5,23 @@
 </head>
 
 <body style="max-width:1000px">
+    <script>
+        function searchOnRMP() {
+            const url = 'https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&queryoption=HEADER&query=' +
+                document.getElementById('search-box').value +
+                '&facetSearch=true';
+            var win = window.open(url, '_blank');
+            win.focus();
+            return false;
+        }
+    </script>
+    <div>
+        <form onsubmit="return searchOnRMP()">
+            <label for="search-box">Teacher:</label>
+            <input id="search-box" type="search">
+            <input type="submit" value="Search">
+        </form>
+    </div>
     <div style="margin-bottom: 20px; width:300px; text-align: center;">
         <h2 id="teacherName"></h2>
         <a id="teacherLink" href="" target="_blank">See on RMP website</a>
@@ -19,11 +36,14 @@
     </div>
 
     <div style="float:left;">
-        <br/>
-        <hr/>
+        <br />
+        <hr />
         <p maxWidth="500px">
-            Replace ratemyprofessors.com with chartlib.com to see the teacher insights. <br/>
-            <a href="https://www.ratemyprofessors.com/ShowRatings.jsp?tid=545784">https://www.ratemyprofessors.com/ShowRatings.jsp?tid=545784</a> -> <a href="https://chartlib.com/ShowRatings.jsp?tid=545784">https://chartlib.com/ShowRatings.jsp?tid=545784</a>
+            Replace ratemyprofessors.com with chartlib.com to see the teacher insights. <br />
+            <a
+                href="https://www.ratemyprofessors.com/ShowRatings.jsp?tid=545784">https://www.ratemyprofessors.com/ShowRatings.jsp?tid=545784</a>
+            -> <a
+                href="https://chartlib.com/ShowRatings.jsp?tid=545784">https://chartlib.com/ShowRatings.jsp?tid=545784</a>
         </p>
     </div>
 
