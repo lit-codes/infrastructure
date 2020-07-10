@@ -18,7 +18,7 @@ cube(`TeacherRatings`, {
       drillMembers: [className, id, adminReviewTimestamp, timestamp],
       filters: [
         {
-          sql: `${CUBE.isRetakeWorthy} or ${CUBE.clarity} < 2`
+          sql: `NOT ${CUBE.isRetakeWorthy} or ${CUBE.clarity} < 2`
         }
       ],
     },
