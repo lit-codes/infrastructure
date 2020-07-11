@@ -23,5 +23,9 @@ cube(`Department`, {
       sql: `name`,
       type: `string`
     }
+  },
+
+  refreshKey: {
+    every: `4 week`
   }
 });

@@ -33,5 +33,9 @@ cube(`School`, {
       sql: `name`,
       type: `string`
     }
+  },
+
+  refreshKey: {
+    every: `4 week`
   }
 });

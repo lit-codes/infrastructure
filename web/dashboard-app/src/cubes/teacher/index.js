@@ -29,7 +29,8 @@ export async function loadTeacher(api, teacherId) {
   console.log('Resp 4 ratings');
   const { data } = response.loadResponse;
   if (!data.length) {
-    throw 'Teacher not found!';
+    alert('Teacher not found!');
+    console.error('Teacher not found!');
   }
   return parseTeacher(teacherId, data);
 }
