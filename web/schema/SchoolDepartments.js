@@ -26,5 +26,9 @@ cube(`SchoolDepartments`, {
       type: `number`,
       primaryKey: true
     }
+  },
+
+  refreshKey: {
+    every: `4 week`
   }
 });

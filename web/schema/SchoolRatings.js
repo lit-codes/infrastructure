@@ -50,5 +50,9 @@ cube(`SchoolRatings`, {
       sql: `time`,
       type: `time`
     }
+  },
+
+  refreshKey: {
+    every: `4 week`
   }
 });

@@ -95,5 +95,9 @@ cube(`TeacherRatings`, {
       sql: `timestamp`,
       type: `time`
     }
+  },
+
+  refreshKey: {
+    every: `4 week`
   }
 });
