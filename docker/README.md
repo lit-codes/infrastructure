@@ -18,3 +18,48 @@ If you don't want to push the docker image, set `DO_NOT_PUSH` environment variab
 ```bash
 DO_NOT_PUSH=true ./build.sh
 ```
+
+# Docker manifests and multi-arch
+
+We have a multi-arch design, meaning that our code should be able to run on
+multiple CPU architectures. That's why we make use of multi-arch manifests that
+tell Docker which image to use for which architecture. When you pull an image
+on an ARM machine, you won't be pulling the AMD64 files anymore.
+
+## Creating manifest lists
+
+In order to create a manifests list you can use the experimental `docker
+manifest`. A manifests list is a list of images with the information about
+which architecture is the image suitable for.
+
+The following example shows how to create a manifests list called
+`image_name:latest` using the images built for `arm64` and `amd64` CPUs.
+
+```bash
+DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create image_name:latest image_name:arm64 image_name:amd64
+```
+
+In reality though, we don't use the above script for creating latest images, we
+use `docker buildx` for that.
+
+We use `docker manifest` to create version manifests, for example the following
+shows how we created version `v0.1` using two images and their `sha256` code:
+
+```
+DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create litcodes/rmp:v0.1 litcodes/rmp@sha256:07ac4a61cbb19e628a2f001b9f2fc65c6ab3d9c9692c4864ab6b5be6b9d3b8b6 litcodes/rmp@sha256:38b944e53eb8696c2e093e227fddeb2a64e733654561abcf73824ae35f228146
+```
+
+The manifests can then be pushed to Docker hub using the following command:
+
+```bash
+DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push litcodes/rmp:v0.1
+```
+
+There is a shortcut for the above steps, simply use the `version.sh` script:
+
+```bash
+./version.sh v0.2
+```
+
+Creates a new version based on the images listed under the
+`litcodes/rmp:latest` manifests list.
