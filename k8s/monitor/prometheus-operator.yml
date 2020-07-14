@@ -1,0 +1,10 @@
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/hostname: buster01
+prometheusOperator:
+  nodeSelector:
+    kubernetes.io/hostname: buster01
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      kubernetes.io/hostname: endpoint-sg-1

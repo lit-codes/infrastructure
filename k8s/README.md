@@ -16,3 +16,8 @@ README]( traefik/README.md )
 
 This is the Helm config for `bitnami/wordpress` helm chart, and is used for my
 wordpress projects.
+
+## monitor
+
+This is Helm commands for setting up monitoring using Prometheus & Grafana.
+See [monitor README](monitor/README.md)
