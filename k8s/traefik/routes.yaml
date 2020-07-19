@@ -15,3 +15,21 @@ spec:
       port: 4000
   tls:
     secretName: cloudflarecrtsecret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: HostRegexp(`monitor.lit.codes`)
+    kind: Rule
+    services:
+    - name: prometheus-opera-grafana
+      port: 80
+      namespace: monitoring
+  tls:
+    secretName: cloudflarecrtsecret
