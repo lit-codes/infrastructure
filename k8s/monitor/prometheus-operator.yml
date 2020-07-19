@@ -1,0 +1,27 @@
+namespaceOverride: "monitoring"
+kube-state-metrics:
+  nodeSelector:
+    role: worker-lg
+prometheusOperator:
+  nodeSelector:
+    role: worker-lg
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        role: worker-lg
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      role: worker-lg
+    scrapeInterval: 5m
+    evaluationInterval: 5m
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      role: worker-lg
+nodeExporter:
+  serviceMonitor:
+    scrapeTimeout: 1m
+grafana:
+  nodeSelector:
+    role: worker-lg
