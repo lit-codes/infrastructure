@@ -28,8 +28,13 @@ helm uninstall --namespace monitoring prometheus-opera
 kubectl -n monitoring get pods -o wide
 ```
 
+## Show prometheus-opera services with selectors
+```bash
+kubectl -n monitoring get services -o wide
+```
+
 ## Port-forward Grafana & Prometheus
 ```bash
-kubectl -n monitoring port-forward prometheus-opera-grafana-HASH 3000 &
-kubectl -n monitoring port-forward prometheus-prometheus-opera-prometheu-prometheus-0 9090 &
+kubectl -n monitoring port-forward `kubectl -n monitoring get pod -l app.kubernetes.io/name=grafana -o name` 3000 &
+kubectl -n monitoring port-forward `kubectl -n monitoring get pod -l app=prometheus -o name` 9090 &
 ```
