@@ -1,10 +1,27 @@
+namespaceOverride: "monitoring"
 kube-state-metrics:
   nodeSelector:
-    kubernetes.io/hostname: buster01
+    role: worker-lg
 prometheusOperator:
   nodeSelector:
-    kubernetes.io/hostname: buster01
+    role: worker-lg
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        role: worker-lg
 prometheus:
   prometheusSpec:
     nodeSelector:
-      kubernetes.io/hostname: endpoint-sg-1
+      role: worker-lg
+    scrapeInterval: 5m
+    evaluationInterval: 5m
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      role: worker-lg
+nodeExporter:
+  serviceMonitor:
+    scrapeTimeout: 1m
+grafana:
+  nodeSelector:
+    role: worker-lg

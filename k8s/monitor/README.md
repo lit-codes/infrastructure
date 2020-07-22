@@ -2,27 +2,34 @@
 
 ## Install [prometheus-operator](https://hub.helm.sh/charts/stable/prometheus-operator)
 
-prometheus-operator includes pre-configured prometheus & grafana
-flags: [prometheus-operator.yml](prometheus-operator.yml)
+This chart includes pre-configured Prometheus & Grafana.
+
+install flags:
+[prometheus-operator.yml](prometheus-operator.yml)
+secret.yml: Create it locally:
+```yaml
+grafana:
+  adminPassword: PASSWORD
+```
 
 ```bash
 helm repo update
 helm search repo prometheus
-helm install prometheus-opera stable/prometheus-operator -f prometheus-operator.yml
+helm install --create-namespace --namespace monitoring prometheus-opera stable/prometheus-operator -f prometheus-operator.yml -f secret.yml
 ```
 
 ## Uninstall prometheus-operator
-
 ```bash
-helm uninstall prometheus-opera
+helm uninstall --namespace monitoring prometheus-opera
 ```
 
 ## Show prometheus-opera pods
 ```bash
-kubectl --namespace default get pods -l "release=prometheus-opera"
+kubectl -n monitoring get pods -o wide
 ```
 
-## Show (and edit) grafana secret
+## Port-forward Grafana & Prometheus
 ```bash
-kubectl edit secrets prometheus-opera-grafana
+kubectl -n monitoring port-forward prometheus-opera-grafana-HASH 3000 &
+kubectl -n monitoring port-forward prometheus-prometheus-opera-prometheu-prometheus-0 9090 &
 ```
