@@ -26,8 +26,15 @@
   "dependencies": {
     "@cubejs-client/core": "^0.19.37",
     "@google-web-components/google-chart": "^3.4.0",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "chart.js": "^2.9.3",
-    "chartjs-plugin-datalabels": "^0.7.0"
+    "chartjs-plugin-datalabels": "^0.7.0",
+    "fontsource-roboto": "^2.1.4",
+    "pages": "0.0.16",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0"
   },
   "browserslist": [
     "since 2017-06"
