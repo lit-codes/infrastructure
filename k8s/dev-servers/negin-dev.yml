@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: negin-dev
+ namespace: development
+spec:
+ ports:
+ - port: 3000
+   targetPort: 3000
+ selector:
+   app: negin-dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: negin-dev
+  name: negin-dev
+  namespace: development
+spec:
+  selector:
+    matchLabels:
+      app: negin-dev
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: negin-dev
+    spec:
+      nodeSelector:
+        role: worker-lg
+      containers:
+      - image: litcodes/theia:latest
+        imagePullPolicy: Always
+        name: negin-dev
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+          - mountPath: /home/project
+            name: project-dir 
+      volumes:
+        - name: project-dir
+          persistentVolumeClaim:
+            claimName: negin-dev-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: negin-dev-pvc
+  namespace: development
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 15Gi
