@@ -5,8 +5,8 @@
   "main": "index.html",
   "scripts": {
     "build": "parcel build -d build index.html",
-    "production-build": "npm run build && http-server -o -p 3000 build",
-    "dev": "parcel serve --open --port 3000 -d build index.html",
+    "production-build": "npm run build && http-server -o -p 8080 build",
+    "dev": "parcel serve --port 8080 -d build index.html",
     "start": "test NODE_ENV == 'production' && npm run production-build || npm run dev",
     "postinstall": "npm run build",
     "lint": "eslint src",

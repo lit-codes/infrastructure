@@ -3,7 +3,7 @@ import { loadTeacher, loadTeacherRatings } from './cubes';
 import { drawUI } from './ui';
 
 // Replaces 3000 to 4000 as a hack for development servers
-const API_URL = document.location.origin.replace('3000', '4000');
+const API_URL = document.location.origin.replace('ui', 'api');
 let authPromise;
 
 async function authenticate(url) {
