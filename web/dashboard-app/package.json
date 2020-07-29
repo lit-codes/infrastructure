@@ -6,9 +6,8 @@
   "scripts": {
     "build": "parcel build -d build index.html",
     "production-build": "npm run build && http-server -o -p 8080 build",
-    "dev": "parcel serve --port 8080 -d build index.html",
+    "dev": "parcel serve --open --port 8080 -d build index.html",
     "start": "test NODE_ENV == 'production' && npm run production-build || npm run dev",
-    "postinstall": "npm run build",
     "lint": "eslint src",
     "fix": "eslint --fix src"
   },
@@ -33,10 +32,13 @@
     "since 2017-06"
   ],
   "devDependencies": {
+    "cssnano": "^4.1.10",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
     "http-server": "^0.12.3"
   }
 }
