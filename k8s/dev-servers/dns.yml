@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rmp-db
+  namespace: development
+spec:
+  type: ExternalName
+  externalName: rmp-db.default.svc.cluster.local
+  ports:
+  - port: 5432
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rmp-redis
+  namespace: development
+spec:
+  type: ExternalName
+  externalName: rmp-redis.default.svc.cluster.local
+  ports:
+  - port: 6379
+

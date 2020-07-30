@@ -1,1 +1,1 @@
-../../docker/build.sh litcodes/teacher-scraper .
+../../docker/build.sh litcodes/teacher-scraper

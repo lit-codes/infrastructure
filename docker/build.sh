@@ -3,6 +3,7 @@
 set -e
 
 IMAGE="$1"
+shift
 
 SCRIPT_DIR=`dirname $0`
 
@@ -19,4 +20,4 @@ if [ -z "$DO_NOT_PUSH" ]; then
 else
     FLAGS="--load"
 fi
-docker buildx build $FLAGS -t $IMAGE .
+docker buildx build $FLAGS -t $IMAGE $@ .
