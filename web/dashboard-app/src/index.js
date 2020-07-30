@@ -2,8 +2,8 @@ import cubejs from '@cubejs-client/core';
 import { loadTeacher, loadTeacherRatings } from './cubes';
 import { drawUI } from './ui';
 
-// Replaces 3000 to 4000 as a hack for development servers
-const API_URL = document.location.origin.replace('ui', 'api');
+// Hack for development, change UI address to API
+const API_URL = document.location.origin.replace('ui', 'api').replace('8080', '8081');
 let authPromise;
 
 async function authenticate(url) {

@@ -1,1 +1,1 @@
-../../docker/build.sh litcodes/school-id-generator .
+../../docker/build.sh litcodes/school-id-generator

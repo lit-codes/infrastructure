@@ -33,28 +33,30 @@ To run the API, you will need a working database with the schema matching the
 rmp-db. You can either create a new database with that schema, or connect to
 the database running in Kubernetes.
 
-### To port-forward the Kubernetes DB
+### Development on the local machine
+
+For local development run this:
 
 ```bash
-kubectl port-forward `kubectl get pod -l app=rmp-db -o name` 5432
+# Basic config
+export REDIS_URL=redis://localhost:6379
+export CUBEJS_DB_HOST=localhost
+export CUBEJS_DB_NAME=rmp
+export CUBEJS_DB_USER=rmp
+export CUBEJS_DB_TYPE=postgres
+export CUBEJS_WEB_SOCKETS=true
+# Secrets
+export LOGIN_PASSWORD=`kubectl get secrets rmp-secret -o json|jq -r '.data.loginpassword'|base64 -d`
+export REDIS_PASSWORD=`kubectl get secrets rmp-secret -o json|jq -r '.data.redispassword'|base64 -d`
+export CUBEJS_DB_PASS=`kubectl get secrets rmp-secret -o json|jq -r '.data.dbpassword'|base64 -d`
+export CUBEJS_API_SECRET=`kubectl get secrets rmp-secret -o json|jq -r '.data.apisecret'|base64 -d`
+# Port forwarding
+kubectl port-forward `kubectl get pod -l app=rmp-db -o name` 5432 &
+kubectl port-forward `kubectl get pod -l app=rmp-redis -o name` 6379 &
 ```
 
-This command listens on your localhost:5432 (make sure the port is not taken
-already), and redirects the traffic to the `rmp-db` pod essentially connecting
-you to the production environment.
-
-### To port-forward the Redis server
-
-Redis server is required if you want to run the API in production mode. We can
-redirect the localhost:6379 to the production Redis server, similar to what we
-did for the DB.
-
-```bash
-kubectl port-forward `kubectl get pod -l app=rmp-redis -o name` 6379
-```
-
-Redis is used for in-memory caching, see https://cube.dev/docs/caching/ for
-more info.
+**Note:** If you are running your own PostgreSQL and Redis instance, replace
+the related config above with your own credentials and address.
 
 ### Creating your own database
 
@@ -67,6 +69,10 @@ repository.
 psql < database/schema.sql
 ```
 
+### Create your own Redis
+
+A Redis instance is required to run the server in production mode.
+
 # File structure
 
 ## dashboard-app
@@ -75,36 +81,16 @@ This is our front-end app, it will be served in the production mode and
 requires the `LOGIN_PASSWORD` (set in the `.env` file) to login.  
 
 In the development mode you can start it by visiting
-[http://localhost:4000/#/dashboard](http://localhost:4000/#/dashboard).
+[http://localhost:8081/#/dashboard](http://localhost:8081/#/dashboard).
 
 ## index.js
 
 This is our backend code, currently pretty dumb, and does nothing useful but
 handling authentication and serving the front-end static content.
 
-## .env
-
-Local development is possible by putting the environment variables inside a
-`.env` file in the root of this repo and running `npm run dev`. 
-
-An example of such file is:
-
-```
-LOGIN_PASSWORD=[adminpassword] # Replace with a password to login from web
-REDIS_URL=redis://localhost:6379
-REDIS_PASSWORD=[rmppassword] # Replace with Redis password
-CUBEJS_DB_HOST=localhost
-CUBEJS_DB_NAME=rmp
-CUBEJS_DB_USER=rmp
-CUBEJS_DB_PASS=[dbpassword] # Replace with PostgreSQL password
-CUBEJS_WEB_SOCKETS=true
-CUBEJS_DB_TYPE=postgres
-CUBEJS_API_SECRET=[apisecrethash] # Replace with the API secret created by the CubeJS CLI
-```
-
 ## CubeJS schemas
 
-Visit [http://localhost:4000/#/schema](http://localhost:4000/#/schema) to
+Visit [http://localhost:8081/#/schema](http://localhost:8081/#/schema) to
 generate schema files used to connect to the database, you can then edit the
 schema files under `schema` folder. See [introduction to CubeJS
 schema](https://cube.dev/docs/getting-started-cubejs-schema) for more info.

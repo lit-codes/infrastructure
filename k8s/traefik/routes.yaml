@@ -34,69 +34,6 @@ spec:
   tls:
     secretName: cloudflarecrtsecret
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: negin-dev
-  namespace: default
-spec:
-  entryPoints:
-    - websecure
-  routes:
-  - match: HostRegexp(`negin-dev.lit.codes`)
-    middlewares:
-    - name: dev-basic-auth
-      namespace: default
-    kind: Rule
-    services:
-    - name: negin-dev
-      port: 3000
-      namespace: development
-  tls:
-    secretName: cloudflarecrtsecret
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: amin-dev
-  namespace: default
-spec:
-  entryPoints:
-    - websecure
-  routes:
-  - match: HostRegexp(`amin-dev.lit.codes`)
-    middlewares:
-    - name: dev-basic-auth
-      namespace: default
-    kind: Rule
-    services:
-    - name: amin-dev
-      port: 3000
-      namespace: development
-  tls:
-    secretName: cloudflarecrtsecret
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: saeed-dev
-  namespace: default
-spec:
-  entryPoints:
-    - websecure
-  routes:
-  - match: HostRegexp(`saeed-dev.lit.codes`)
-    middlewares:
-    - name: dev-basic-auth
-      namespace: default
-    kind: Rule
-    services:
-    - name: saeed-dev
-      port: 3000
-      namespace: development
-  tls:
-    secretName: cloudflarecrtsecret
----
 # More info: https://docs.traefik.io/middlewares/basicauth/
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -120,6 +57,8 @@ metadata:
 
 data:
   users: |
-    bmVnaW46JGFwcjEkTlZ2cVBiam8kOXNDaUo4SmdYUFJrTnpQTXROcS5YLwoKYW1pbjokYXByMSR5
-    VVBSdnlocyRzUElqLko5V0NEY1o3NE9iL080ZDAwCgpzYWVlZDokYXByMSQ3Z1FvTHdjYSRDU2Fh
-    cmc5RGRWbkd6QXpEM3JEckYxCgo=
+      bmVnaW46JGFwcjEkTlZ2cVBiam8kOXNDaUo4SmdYUFJrTnpQTXROcS5YLwoKYW1pbjokYXByMSR5
+      VVBSdnlocyRzUElqLko5V0NEY1o3NE9iL080ZDAwCgpzYWVlZDokYXByMSQ3Z1FvTHdjYSRDU2Fh
+      cmc5RGRWbkd6QXpEM3JEckYxCgpnYWdpazokYXByMSRsMjJhMnhBTiRXTFdubm5DWVNPLjZQN1lZ
+      c1hMYlEwCgo=
+

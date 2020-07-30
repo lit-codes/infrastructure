@@ -4,10 +4,10 @@
   "description": "Frontend for rmp",
   "main": "index.html",
   "scripts": {
-    "build": "parcel build -d build index.html",
-    "production-build": "npm run build && http-server -o -p 8080 build",
-    "dev": "parcel serve --open --port 8080 -d build index.html",
-    "start": "test NODE_ENV == 'production' && npm run production-build || npm run dev",
+    "dev": "parcel serve --no-autoinstall --port 8080 --dist-dir build index.html",
+    "build": "parcel build --no-autoinstall --dist-dir build index.html",
+    "start": "npm run build && http-server -p 8080 build",
+    "postinstall": "npm run build",
     "lint": "eslint src",
     "fix": "eslint --fix src"
   },
@@ -32,6 +32,7 @@
     "since 2017-06"
   ],
   "devDependencies": {
+    "cssnano": "^4.1.10",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.21.2",

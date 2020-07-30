@@ -10,7 +10,7 @@ npm install
 
 ## Serve the files
 
-The following command will start a web server on port 3000 and serves
+The following command will start a web server on port 8080 and serves
 the files built for production.
 
 ```

@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development node index.js",
-    "start": "NODE_ENV=production node index.js",
-    "postinstall": "(cd dashboard-app; npm install)"
+    "serve": "node index.js",
+    "dev": "npm run serve",
+    "start": "NODE_ENV=production npm run serve"
   },
   "dependencies": {
     "@cubejs-backend/postgres-driver": "^0.19.20",
