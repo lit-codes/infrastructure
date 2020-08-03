@@ -19,18 +19,25 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: grafana
+  name: read-receipt
   namespace: default
 spec:
   entryPoints:
     - websecure
   routes:
-  - match: HostRegexp(`monitor.lit.codes`)
+  - match: Host(`receipt.lit.codes`) && path(`/{call:[A-Za-z_-]+}/{img:[A-Za-z_-]+.png}`)
+    middlewares:
+    - name: receipt-basic-auth
+      namespace: default
     kind: Rule
     services:
-    - name: prometheus-opera-grafana
-      port: 80
-      namespace: monitoring
+    - name: read-receipt
+      port: 8080
+  - match: Host(`receipt.lit.codes`) && path(`/{img:[A-Za-z_-]+.png}`)
+    kind: Rule
+    services:
+    - name: read-receipt
+      port: 8080
   tls:
     secretName: cloudflarecrtsecret
 ---
@@ -61,4 +68,24 @@ data:
       VVBSdnlocyRzUElqLko5V0NEY1o3NE9iL080ZDAwCgpzYWVlZDokYXByMSQ3Z1FvTHdjYSRDU2Fh
       cmc5RGRWbkd6QXpEM3JEckYxCgpnYWdpazokYXByMSRsMjJhMnhBTiRXTFdubm5DWVNPLjZQN1lZ
       c1hMYlEwCgo=
+---
+# More info: https://docs.traefik.io/middlewares/basicauth/
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: receipt-basic-auth
+  namespace: default
+spec:
+  basicAuth:
+    secret: receipt-secret
+    namespace: default
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: receipt-secret
+  namespace: default
+
+data:
+  users: YWRtaW46JGFwcjEkUFRyOTUvTTckL2pCU1F2SGtyeXNCVGt1UFlpcnRHLwoK
 
