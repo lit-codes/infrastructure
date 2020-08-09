@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmp-db-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rmp-db-dev
+  template:
+    metadata:
+      labels:
+        app: rmp-db-dev
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-md
+      containers:
+        - name: rmp-db-dev
+          image: postgres:12
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data-dev
+              name: data-dir 
+          env:
+            - name: POSTGRES_DB
+              value: rmp
+            - name: POSTGRES_USER
+              value: rmp
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmp-secret
+                  key: dbpassword
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: rmp-db-dev-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rmp-db-dev
+  labels:
+    app: rmp-db-dev
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    app: rmp-db-dev
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rmp-db-dev-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 9Gi
