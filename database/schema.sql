@@ -394,11 +394,10 @@ ALTER TABLE ONLY public.teacher_tags
 
 
 --
--- Name: related_teachers unique_related_teachers; Type: CONSTRAINT; Schema: public; Owner: rmp
+-- Name: ratings_admin_review_timestamp_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.related_teachers
-    ADD CONSTRAINT unique_related_teachers UNIQUE (teacher_id, related_teacher_id);
+CREATE INDEX ratings_admin_review_timestamp_idx ON public.teacher_ratings USING btree (admin_review_timestamp);
 
 
 --
@@ -414,14 +413,6 @@ CREATE INDEX ratings_teacher_idx ON public.teacher_ratings USING btree (teacher_
 
 ALTER TABLE ONLY public.school_ratings
     ADD CONSTRAINT campus_rating_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.school(id);
-
-
---
--- Name: related_teachers related_teachers_related_teacher_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: rmp
---
-
-ALTER TABLE ONLY public.related_teachers
-    ADD CONSTRAINT related_teachers_related_teacher_id_fkey FOREIGN KEY (related_teacher_id) REFERENCES public.teacher(id);
 
 
 --
