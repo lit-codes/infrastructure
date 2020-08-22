@@ -1,0 +1,28 @@
+version: '3'
+services:
+  database:
+    image: "postgres:12" # use latest official postgres 12 version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - ./initdb:/docker-entrypoint-initdb.d/
+    networks:
+      - dblink
+    expose:
+      - 5432
+  rmp:
+    image: litcodes/rmp
+    env_file:
+      - rmp.env
+    networks:
+      - dblink
+    ports:
+      - 4000:8081
+    volumes:
+      - ../:/opt/
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
+
+networks:
+  dblink:
