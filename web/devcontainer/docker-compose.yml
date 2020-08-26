@@ -8,21 +8,47 @@ services:
       - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
       - ./initdb:/docker-entrypoint-initdb.d/
     networks:
-      - dblink
+      - db-network
     expose:
       - 5432
-  rmp:
-    image: litcodes/rmp
+  redis:
+    image: "redis"
+    networks:
+      - redis-network
+    expose:
+      - 6379
+  rmp-api:
+    build:
+      context: ../rmp-base
+    networks:
+      - db-network
+      - redis-network
+      - rmp-api
+    volumes:
+      - ../:/opt
     env_file:
       - rmp.env
-    networks:
-      - dblink
+    working_dir: /opt
+    command: sh -c 'npm install && npm run dev'
+    expose:
+      - 4000
     ports:
-      - 4000:8081
+      - 127.0.0.1:4000:4000
+  rmp-frontend:
+    build:
+      context: ../rmp-base
+    networks:
+      - rmp-api
     volumes:
-      - ../:/opt/
+      - ../:/opt
+    working_dir: /opt/dashboard-app
+    command: sh -c 'npm install && npm run dev'
+    ports:
+      - 127.0.0.1:3000:3000
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
 
 networks:
-  dblink:
+  db-network:
+  redis-network:
+  rmp-api:

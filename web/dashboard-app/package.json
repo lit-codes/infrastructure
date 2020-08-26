@@ -4,9 +4,9 @@
   "description": "Frontend for rmp",
   "main": "index.html",
   "scripts": {
-    "dev": "parcel serve --no-autoinstall --port 8080 --dist-dir build index.html",
+    "dev": "parcel serve --no-autoinstall --port 3000 --dist-dir build index.html",
     "build": "parcel build --no-autoinstall --dist-dir build index.html",
-    "start": "npm run build && http-server -p 8080 build",
+    "start": "npm run build && http-server -p 3000 build",
     "postinstall": "npm run build",
     "lint": "eslint src",
     "fix": "eslint --fix src"
