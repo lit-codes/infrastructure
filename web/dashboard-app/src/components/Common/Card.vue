@@ -3,7 +3,7 @@
       <q-card-section class="bg-light text-dark">
           <div class="row justify-between" style="min-width: 450px;">
                 <div>
-                    Andrew
+                    {{ name }}
                 <q-icon  class="q-ml-sm" :name="fasCopy" />
                 </div>
                 <div class="q-mx-md">
@@ -28,6 +28,12 @@
 import { farTrashAlt, fasCopy } from '@quasar/extras/fontawesome-v5'
 
 export default {
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       farTrashAlt: null,
