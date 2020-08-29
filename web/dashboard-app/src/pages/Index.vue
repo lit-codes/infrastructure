@@ -20,12 +20,12 @@
 import Card from '../components/Pages/Index/Card'
 import Score from '../components/Pages/Index/Score'
 import Bar from '../components/Common/Chartjs/Bar/Bar'
-import cubejs from '@cubejs-client/core'
+// import cubejs from '@cubejs-client/core'
 
 // Hack for development, change UI address to API
-const API_URL = document.location.origin
-  .replace('ui', 'api') // Theia dev servers
-  .replace('3000', '4000') // Local development
+// const API_URL = document.location.origin
+//   .replace('ui', 'api') // Theia dev servers
+//   .replace('3000', '4000') // Local development
 
 export default {
   name: 'PageIndex',
