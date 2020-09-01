@@ -4,11 +4,13 @@ metadata:
   name: traefik
 
 spec:
+  selector:
+    app: traefik
+  type: NodePort
   externalIPs:
-  - 178.128.106.70
+  - 54.254.252.35
   ports:
     - protocol: TCP
       name: websecure
       port: 443
-  selector:
-    app: traefik
+      nodePort: 443
