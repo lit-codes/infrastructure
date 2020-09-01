@@ -33,6 +33,14 @@ spec:
     services:
     - name: read-receipt
       port: 8080
+  - match: Host(`receipt.lit.codes`) && path(`/stats`)
+    middlewares:
+    - name: receipt-basic-auth
+      namespace: default
+    kind: Rule
+    services:
+    - name: read-receipt
+      port: 8080
   - match: Host(`receipt.lit.codes`) && path(`/{img:[A-Za-z_-]+.png}`)
     kind: Rule
     services:
