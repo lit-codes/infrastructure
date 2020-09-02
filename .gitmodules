@@ -1,0 +1,6 @@
+[submodule "ansible/ansible-role-wireguard"]
+	path = ansible/ansible-role-wireguard
+	url = https://github.com/githubixx/ansible-role-wireguard
+[submodule "ansible/k3s-ansible"]
+	path = ansible/k3s-ansible
+	url = https://github.com/lit-codes/k3s-ansible
