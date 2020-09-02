@@ -78,7 +78,7 @@ app.use((req, res) => {
     res.redirect(`/?tid=${req.query.tid}`);
 });
 
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 4000;
 const server = http.createServer(app);
 
 server.listen(port, (err) => {

@@ -3,7 +3,9 @@ import { loadTeacher, loadTeacherRatings } from './cubes';
 import { drawUI } from './ui';
 
 // Hack for development, change UI address to API
-const API_URL = document.location.origin.replace('ui', 'api').replace('8080', '8081');
+const API_URL = document.location.origin
+    .replace('ui', 'api')     // Theia dev servers
+    .replace('3000', '4000'); // Local development
 let authPromise;
 
 async function authenticate(url) {

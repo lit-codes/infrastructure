@@ -19,6 +19,11 @@ cube(`Teacher`, {
       type: `string`
     },
     
+    teacherId: {
+      sql: `id`,
+      type: `number`,
+    },
+
     id: {
       sql: `id`,
       type: `number`,

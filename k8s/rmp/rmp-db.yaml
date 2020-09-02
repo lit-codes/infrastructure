@@ -21,7 +21,7 @@ spec:
               - key: role
                 operator: In
                 values:
-                - worker-md
+                - worker-md-01
       containers:
         - name: rmp-db
           image: postgres:12
