@@ -1,4 +1,4 @@
-import { generateQuery } from './teacher'
+import { generateQuery, retakeQuery } from './teacher'
 
 class Teacher {
   constructor (options) {
@@ -37,6 +37,21 @@ export async function loadTeacher (api, teacherId) {
       console.error('Teacher not found!')
     }
     return parseTeacher(teacherId, data)
+  } catch (e) {
+    console.log('err:', e)
+  }
+}
+
+export async function loadRetakeCourse (api, teacherId) {
+  console.log('Req 4 ratings distribution')
+  try {
+    const response = await api.load(retakeQuery('1269'))
+    console.log('response:', response.loadResponse)
+    const { data } = response.loadResponse
+    if (!data.length) {
+      alert('Teacher not found!')
+      console.error('Teacher not found!')
+    }
   } catch (e) {
     console.log('err:', e)
   }

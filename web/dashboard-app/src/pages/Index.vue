@@ -21,7 +21,7 @@ import Card from '../components/Common/Card'
 import Score from '../components/Pages/Index/Score'
 import Bar from '../components/Chartjs/Bar'
 import Pie from '../components/Chartjs/Pie'
-import { loadTeacher, loadTeacherRatings } from '../cubes'
+import { loadTeacher, loadTeacherRatings, loadRetakeCourse } from '../cubes'
 import { drawOverallRatings, drawRatingsOverTime } from '../Charts'
 
 export default {
@@ -76,6 +76,7 @@ export default {
       if (newValue) {
         this.loadTeacher()
         this.loadTeacherRatings()
+        loadRetakeCourse(newValue, '1269')
       }
     }
   }

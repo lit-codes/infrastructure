@@ -21,7 +21,7 @@ export function drawRatingsOverTime (teacherRatings) {
         {
           label: 'Good',
           data: goods,
-          backgroundColor: chartColors.green
+          backgroundColor: chartColors.purple
         }
       ]
     }

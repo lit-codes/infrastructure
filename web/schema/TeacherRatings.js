@@ -22,6 +22,15 @@ cube(`TeacherRatings`, {
         }
       ],
     },
+    retakeWorthyCount: {
+      type: `count`,
+      drillMembers: [className, id, adminReviewTimestamp, timestamp],
+      filters: [
+        {
+          sql: `${CUBE.isRetakeWorthy}`
+        }
+      ],
+    },
   },
   
   dimensions: {

@@ -13,3 +13,29 @@ export function generateQuery (id) {
     timezone: 'UTC'
   }
 }
+
+export function retakeQuery (id) {
+  return {
+    measures: [
+      'TeacherRatings.retakeWorthyCount'
+    ],
+    timeDimensions: [
+      {
+        dimension: 'TeacherRatings.adminReviewTimestamp',
+        granularity: 'day',
+        dateRange: 'Last year'
+      }
+    ],
+    timezone: 'UTC',
+    dimensions: [],
+    filters: [
+      {
+        dimension: 'Teacher.teacherId',
+        operator: 'equals',
+        values: [
+          id
+        ]
+      }
+    ]
+  }
+}

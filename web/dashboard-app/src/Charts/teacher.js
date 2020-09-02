@@ -7,7 +7,7 @@ export function drawOverallRatings (teacher) {
         data: [teacher.badRatingCount, teacher.goodRatingCount],
         backgroundColor: [
           chartColors.red,
-          chartColors.green
+          chartColors.purple
         ],
         label: 'Teacher'
       }],
