@@ -1,48 +1,26 @@
-# rmp-fe
+# Lite Codes (lit-codes)
 
-Front-end of the RMP app
+A dashboard for analysis of the RMP website
 
-## Install dependencies
-
+## Install the dependencies
 ```bash
-npm install
+yarn
 ```
 
-## Serve the files
-
-The following command will start a web server on port 8080 and serves
-the files built for production.
-
-```
-npm start
-```
-
-## Development
-
-Bundling is done by `parcel` which is a zero-config bundler for JS. The build
-files are stored in `dist/`. It comes with `hot-reload` meaning that your
-changes will be automatically applied to the browser immediately after you
-saved the source file, without refreshing.
-
+### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-npm run dev
+quasar dev
 ```
 
-## Linting
-
-It's good practice to have a standard coding style, we will use `eslint` for
-linting and automatically styling our code to achieve a resonable consistency.
-
-To check for style errors run:
-
+### Lint the files
 ```bash
-npm run lint
+yarn run lint
 ```
 
-To fix the errors on a best-effort basis:
-
+### Build the app for production
 ```bash
-npm run fix
+quasar build
 ```
 
-Further into the project we can enforce the style using precommit hooks.
+### Customize the configuration
+See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).

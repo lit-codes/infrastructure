@@ -1,33 +1,34 @@
-import { chartColors } from './colors';
+import { chartColors } from './colors'
 
-export function drawOverallRatings(chartjs, teacher) {
+export function drawOverallRatings (teacher) {
   if (teacher !== null) {
-    const chartType = 'pie';
-    const data = {
+    const chartdata = {
       datasets: [{
         data: [teacher.badRatingCount, teacher.goodRatingCount],
         backgroundColor: [
           chartColors.red,
-          chartColors.green,
+          chartColors.purple
         ],
-        label: 'Teacher',
+        label: 'Teacher'
       }],
       // These labels appear in the legend and in the tooltips when hovering different arcs
       labels: [
         'Bad',
-        'Good',
-      ],
-    };
-    const contID = 'teacherPieChart';
+        'Good'
+      ]
+    }
     const options = {
       plugins: {
         // Change options for ALL labels of THIS CHART
         datalabels: {
-          color: 'white',
-        },
-      },
+          color: 'white'
+        }
+      }
       // responsive: true
-    };
-    chartjs.drawChart(chartType, data, contID, options);
+    }
+    return {
+      chartdata,
+      options
+    }
   }
 }

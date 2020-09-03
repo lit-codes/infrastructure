@@ -1,2 +1,2 @@
-export { loadTeacher } from './teacher';
-export { loadTeacherRatings } from './teacherRatings';
+export { loadTeacher, loadRetakeCourse } from './teacher'
+export { loadTeacherRatings } from './teacherRatings'
