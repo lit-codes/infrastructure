@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    image: "postgres:12" # use latest official postgres 12 version
+    image: 'postgres:12' # use latest official postgres 12 version
     env_file:
       - database.env # configure postgres
     volumes:
@@ -12,7 +12,7 @@ services:
     expose:
       - 5432
   redis:
-    image: "redis"
+    image: 'redis'
     networks:
       - redis-network
     expose:
@@ -23,7 +23,6 @@ services:
     networks:
       - db-network
       - redis-network
-      - rmp-api
     volumes:
       - ../:/opt
     env_file:
@@ -34,17 +33,6 @@ services:
       - 4000
     ports:
       - 127.0.0.1:4000:4000
-  rmp-frontend:
-    build:
-      context: ../rmp-base
-    networks:
-      - rmp-api
-    volumes:
-      - ../:/opt
-    working_dir: /opt/dashboard-app
-    command: sh -c 'npm install && npm run dev'
-    ports:
-      - 127.0.0.1:3000:3000
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
 

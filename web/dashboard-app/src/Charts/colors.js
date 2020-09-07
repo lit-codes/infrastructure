@@ -6,9 +6,9 @@ const chartColors = {
   darkgreen: 'darkgreen',
   blue: 'rgb(54, 162, 235)',
   purple: 'rgb(153, 102, 255)',
-  grey: 'rgb(201, 203, 207)',
-};
+  grey: 'rgb(201, 203, 207)'
+}
 
 export {
-  chartColors,
-};
+  chartColors
+}
