@@ -33,7 +33,6 @@ export async function loadTeacher (api, teacherId) {
     console.log('Resp 4 ratings')
     const { data } = response.loadResponse
     if (!data.length) {
-      alert('Teacher not found!')
       console.error('Teacher not found!')
     }
     return parseTeacher(teacherId, data)
@@ -43,15 +42,14 @@ export async function loadTeacher (api, teacherId) {
 }
 
 export async function loadRetakeCourse (api, teacherId) {
-  console.log('Req 4 ratings distribution')
   try {
-    const response = await api.load(retakeQuery('1269'))
+    const response = await api.load(retakeQuery(teacherId))
     console.log('response:', response.loadResponse)
     const { data } = response.loadResponse
     if (!data.length) {
-      alert('Teacher not found!')
       console.error('Teacher not found!')
     }
+    return data[0]['TeacherRatings.retakeWorthyCount']
   } catch (e) {
     console.log('err:', e)
   }

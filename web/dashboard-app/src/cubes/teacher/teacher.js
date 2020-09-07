@@ -16,13 +16,10 @@ export function generateQuery (id) {
 
 export function retakeQuery (id) {
   return {
-    measures: [
-      'TeacherRatings.retakeWorthyCount'
-    ],
+    measures: ['TeacherRatings.retakeWorthyCount'],
     timeDimensions: [
       {
         dimension: 'TeacherRatings.adminReviewTimestamp',
-        granularity: 'day',
         dateRange: 'Last year'
       }
     ],
@@ -32,9 +29,7 @@ export function retakeQuery (id) {
       {
         dimension: 'Teacher.teacherId',
         operator: 'equals',
-        values: [
-          id
-        ]
+        values: [id]
       }
     ]
   }

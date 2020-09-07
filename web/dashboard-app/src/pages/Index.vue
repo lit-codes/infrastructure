@@ -1,9 +1,7 @@
 <template>
-  <q-page
-    class="flex flex-start justify-start items-start content-start q-pa-md"
-  >
+  <q-page class="flex flex-start justify-start items-start content-start q-pa-md">
     <Card class="q-ma-xs" :name="teacher.fullName">
-      <Bar :chartdata="ratingsOverTime.chartdata" :options="ratingsOverTime.options"/>
+      <Bar :chartdata="ratingsOverTime.chartdata" :options="ratingsOverTime.options" />
     </Card>
 
     <Card class="q-ma-xs" :name="teacher.fullName">
@@ -11,7 +9,7 @@
     </Card>
 
     <Card class="q-ma-xs" :name="teacher.fullName">
-      <Score />
+      <Score :retakeWorthyCount="retakeWorthyCount" />
     </Card>
   </q-page>
 </template>
@@ -36,7 +34,8 @@ export default {
     return {
       teacher: {},
       overallRatings: {},
-      ratingsOverTime: {}
+      ratingsOverTime: {},
+      retakeWorthyCount: ''
     }
   },
   mounted () {
@@ -56,10 +55,23 @@ export default {
     },
     async loadTeacherRatings () {
       if (this.cubeApi) {
-        const teacherRatings = await loadTeacherRatings(this.cubeApi, this.teacherId)
+        const teacherRatings = await loadTeacherRatings(
+          this.cubeApi,
+          this.teacherId
+        )
         if (teacherRatings) {
           this.ratingsOverTime = drawRatingsOverTime(teacherRatings)
         }
+      }
+    },
+    async loadRetakeCourse () {
+      if (this.cubeApi) {
+        const retakeCourse = await loadRetakeCourse(
+          this.cubeApi,
+          this.teacherId
+        )
+
+        this.retakeWorthyCount = retakeCourse
       }
     }
   },
@@ -76,7 +88,7 @@ export default {
       if (newValue) {
         this.loadTeacher()
         this.loadTeacherRatings()
-        loadRetakeCourse(newValue, '1269')
+        this.loadRetakeCourse()
       }
     }
   }
