@@ -2,9 +2,6 @@
 
 set -e
 
-IMAGE="$1"
-shift
-
 SCRIPT_DIR=`dirname $0`
 
 # Read the archs file
@@ -20,4 +17,4 @@ if [ -z "$DO_NOT_PUSH" ]; then
 else
     FLAGS="--load"
 fi
-docker buildx build $FLAGS -t $IMAGE $@ .
+docker buildx build $FLAGS -t $@

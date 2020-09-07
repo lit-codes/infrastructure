@@ -23,5 +23,16 @@ npm install -g parcel@next
 
 1. Start devcontainer: `./start.sh`
 2. Visit http://localhost:4000/#/build?query={%22dimensions%22:[%22Teacher.teacherId%22],%22timeDimensions%22:[]} to get the list of teacher IDs
-3. See the teacher http://localhost:3000/?tid=[teacher id]
-4. Edit source files and parcel will automatically build and reload the project
+3. Run the app locally using `npm run dev`, see the teacher http://localhost:3000/?tid=[teacher id]
+4. Edit source files and your project will be automatically built
+
+## Running the front-end app locally
+
+The above commands will run the backend application on `http://127.0.0.1:4000`,
+you would still need to run the front-end application locally, using the usualy
+commands:
+
+```
+npm install
+npm run dev
+```
