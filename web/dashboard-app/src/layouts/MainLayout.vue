@@ -2,28 +2,7 @@
   <q-layout view="lHh Lpr lFf" class="bg-dark">
     <q-header elevated>
       <q-toolbar>
-        <q-select
-          v-model="model"
-          dark
-          dense
-          standout
-          style="min-width: 300px"
-          label="Ratings of teachers over time"
-          class="q-ml-md"
-          use-input
-          hide-selected
-          input-debounce="500"
-          :options="options"
-          dropdown-icon="search"
-          @filter="filterFn"
-          @filter-abort="abortFilterFn"
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">No results</q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+        <SearchQuestion />
 
         <q-toolbar-title>Codelite App</q-toolbar-title>
 
@@ -41,28 +20,17 @@
 </template>
 
 <script>
+import SearchQuestion from '../components/Common/SearchQuestion'
+
 export default {
   name: 'MainLayout',
   data () {
     return {
-      leftDrawerOpen: false,
-      text: '',
-
-      model: null,
-      options: []
+      leftDrawerOpen: false
     }
   },
-  methods: {
-    async filterFn (val, update, abort) {
-      const { data } = await this.$axios.get(`http://127.0.0.1:3001/search?q=${val}`)
-      update(() => {
-        this.options = data.map(item => item._source.name)
-      })
-    },
-
-    abortFilterFn () {
-      // console.log('delayed filter aborted')
-    }
+  components: {
+    SearchQuestion
   }
 }
 </script>

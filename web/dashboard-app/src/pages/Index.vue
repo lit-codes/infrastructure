@@ -1,16 +1,29 @@
 <template>
-  <q-page class="flex flex-start justify-start items-start content-start q-pa-md">
-    <Card class="q-ma-xs" :name="teacher.fullName">
-      <Bar :chartdata="ratingsOverTime.chartdata" :options="ratingsOverTime.options" />
-    </Card>
+  <q-page class=" content-start q-pa-md">
+    <q-card class="q-ma-xs q-card">
+      <div class="q-pa-md">
+          <p class="text-h6">
+            {{question.q}}
+          </p>
+          <p class="q-pl-md text-subtitle1">
+            - {{question.desc}}
+          </p>
+      </div>
+    </q-card>
 
-    <Card class="q-ma-xs" :name="teacher.fullName">
-      <Pie :chartdata="overallRatings.chartdata" :options="overallRatings.options" />
-    </Card>
+    <div class="flex flex-start justify-start items-start">
+      <Card class="q-ma-xs" :name="teacher.fullName">
+        <Bar :chartdata="ratingsOverTime.chartdata" :options="ratingsOverTime.options" />
+      </Card>
 
-    <Card class="q-ma-xs" :name="teacher.fullName">
-      <Score :retakeWorthyCount="retakeWorthyCount" />
-    </Card>
+      <Card class="q-ma-xs" :name="teacher.fullName">
+        <Pie :chartdata="overallRatings.chartdata" :options="overallRatings.options" />
+      </Card>
+
+      <Card class="q-ma-xs" :name="teacher.fullName">
+        <Score :retakeWorthyCount="retakeWorthyCount" />
+      </Card>
+    </div>
   </q-page>
 </template>
 
@@ -76,6 +89,9 @@ export default {
     }
   },
   computed: {
+    question () {
+      return this.$store.state.question.question
+    },
     cubeApi () {
       return this.$store.state.cube.cubejsApi
     },
