@@ -7,8 +7,9 @@ export default [
   },
   {
     component: 'Q2',
-    q: 'Teacher\'s popularity?',
-    desc: 'You have heard that Andrew\'s popularity has increased a lot over time, check if that\'s true.'
+    q: "Teacher's popularity?",
+    desc:
+      "You have heard that Andrew's popularity has increased a lot over time, check if that's true."
   },
   {
     component: 'Q3',
@@ -17,3 +18,12 @@ export default [
       'You want to choose between three of your favorite schools, check which one is best for teaching biology.'
   }
 ]
+
+/*
+What is the overall rating of the teacher?
+
+How does the rating count change over time for teacher X? only teacher
+
+How does bad rating percentage change over time for teacher X?
+
+*/

@@ -4,7 +4,7 @@
     label="Teacher name"
     use-input
     hide-selected
-    input-debounce="300"
+    input-debounce="500"
     :options="options"
     dropdown-icon="search"
     option-label="q"
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import Questions from '../../constants/questions'
 
 export default {
   props: {
@@ -46,25 +45,12 @@ export default {
     }
   },
   methods: {
-    filterFn (val, update) {
-      if (val === '') {
-        update(() => {
-          this.options = Questions
-        })
-        return
-      }
-
+    async filterFn (val, update, abort) {
+      const { data } = await this.$axios.get(`http://127.0.0.1:3001/search?q=${val}`)
       update(() => {
-        const needle = val.toLowerCase()
-        this.options = Questions.filter(v => v.q.toLowerCase().indexOf(needle) > -1)
+        this.options = data.map(item => item._source.question)
       })
     },
-    // async filterFn (val, update, abort) {
-    //   const { data } = await this.$axios.get(`http://127.0.0.1:3001/search?q=${val}`)
-    //   update(() => {
-    //     this.options = data.map(item => item._source.question)
-    //   })
-    // },
 
     abortFilterFn () {
       // console.log('delayed filter aborted')
