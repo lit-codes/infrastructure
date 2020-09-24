@@ -6,6 +6,11 @@
 2. install docker-compose (included in Docker Desktop for Windows)
 3. On Windows, make sure Docker Desktop is running
 4. Make sure you have set up your ssh key in gitlab.
+5. install parcel
+
+```bash
+npm install -g parcel@next
+```
 
 ## Run:
 

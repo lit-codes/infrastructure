@@ -1,83 +1,37 @@
 <template>
-  <q-page
-    class="flex flex-start justify-start items-start content-start q-pa-md"
-  >
-    <Card class="q-ma-xs" :name="teacher.fullName">
-      <Bar :chartdata="ratingsOverTime.chartdata" :options="ratingsOverTime.options"/>
-    </Card>
+  <q-page class=" content-start q-pa-md">
+    <q-card
+      v-if="question"
+      class="q-ma-xs q-card"
+    >
+      <div class="q-pa-md">
+        <p class="text-h6">
+          {{question.q}}
+        </p>
+        <p class="q-pl-md text-subtitle1">
+          - {{question.desc}}
+        </p>
+      </div>
+    </q-card>
 
-    <Card class="q-ma-xs" :name="teacher.fullName">
-      <Pie :chartdata="overallRatings.chartdata" :options="overallRatings.options" />
-    </Card>
-
-    <Card class="q-ma-xs" :name="teacher.fullName">
-      <Score />
-    </Card>
+    <Q1 v-if="question.component === 'Q1'"/>
   </q-page>
 </template>
 
 <script>
-import Card from '../components/Common/Card'
-import Score from '../components/Pages/Index/Score'
-import Bar from '../components/Chartjs/Bar'
-import Pie from '../components/Chartjs/Pie'
-import { loadTeacher, loadTeacherRatings, loadRetakeCourse } from '../cubes'
-import { drawOverallRatings, drawRatingsOverTime } from '../Charts'
+import Q1 from '../components/Questions/Q1'
 
 export default {
   name: 'PageIndex',
   components: {
-    Card,
-    Score,
-    Bar,
-    Pie
-  },
-  data () {
-    return {
-      teacher: {},
-      overallRatings: {},
-      ratingsOverTime: {}
-    }
+    Q1
   },
   mounted () {
     this.$store.dispatch('cube/authenticate')
-    this.loadTeacher()
-    this.loadTeacherRatings()
-  },
-  methods: {
-    async loadTeacher () {
-      if (this.cubeApi) {
-        const teacher = await loadTeacher(this.cubeApi, this.teacherId)
-        if (teacher) {
-          this.teacher = teacher
-          this.overallRatings = drawOverallRatings(teacher)
-        }
-      }
-    },
-    async loadTeacherRatings () {
-      if (this.cubeApi) {
-        const teacherRatings = await loadTeacherRatings(this.cubeApi, this.teacherId)
-        if (teacherRatings) {
-          this.ratingsOverTime = drawRatingsOverTime(teacherRatings)
-        }
-      }
-    }
   },
   computed: {
-    cubeApi () {
-      return this.$store.state.cube.cubejsApi
-    },
-    teacherId () {
-      return this.$route.query.tid
-    }
-  },
-  watch: {
-    cubeApi (newValue, oldValue) {
-      if (newValue) {
-        this.loadTeacher()
-        this.loadTeacherRatings()
-        loadRetakeCourse(newValue, '1269')
-      }
+    question () {
+      return this.$store.state.question.question
     }
   }
 }
