@@ -1,18 +1,19 @@
 <template>
+  <!-- This Componentv have been Copied form existing component from github -->
   <q-page
     class="window-height window-width row justify-center items-center"
-    style="background: linear-gradient(#8274c5, #5a4a9f)"
+    style="background:none"
   >
     <div class="column q-pa-lg">
       <div class="row">
-        <q-card square class="shadow-24" style="width: 300px; height: 485px">
-          <q-card-section class="bg-deep-purple-7">
+        <q-card square class="shadow-24 " style="width: 300px; height: 500px">
+          <q-card-section class="bg-light-blue-7">
             <h4 class="text-h5 text-white q-my-md">Company &amp; Co</h4>
             <div
               class="absolute-bottom-right q-pr-md"
               style="transform: translateY(50%)"
             >
-              <q-btn fab icon="add" color="purple-4" />
+              <q-btn fab icon="add" color="blue-9" />
             </div>
           </q-card-section>
           <q-card-section>
@@ -58,7 +59,7 @@
             <q-btn
               unelevated
               size="lg"
-              color="purple-4"
+              color="blue-9"
               class="full-width text-white"
               label="Sign In"
             />
@@ -69,16 +70,18 @@
         </q-card>
       </div>
     </div>
+    <!-- Sigen  In Section-->
+
     <div class="column q-pa-lg">
       <div class="row">
-        <q-card square class="shadow-24" style="width: 300px; height: 485px">
-          <q-card-section class="bg-deep-purple-7">
+        <q-card square class="shadow-24" style="width: 300px; height: 500px">
+          <q-card-section class="bg-light-blue-7">
             <h4 class="text-h5 text-white q-my-md">Registration</h4>
             <div
               class="absolute-bottom-right q-pr-md"
               style="transform: translateY(50%)"
             >
-              <q-btn fab icon="close" color="purple-4" />
+              <q-btn fab icon="close" color="blue-9" />
             </div>
           </q-card-section>
           <q-card-section>
@@ -122,7 +125,7 @@
             <q-btn
               unelevated
               size="lg"
-              color="purple-4"
+              color="blue-9"
               class="full-width text-white"
               label="Get Started"
             />
@@ -143,12 +146,11 @@ export default {
     return {
       email: '',
       username: '',
-      password: '',
+      password: ''
     }
-  },
+  }
 }
 </script>
 
-<style>
-</style>
+<style></style>
 @justinatack
