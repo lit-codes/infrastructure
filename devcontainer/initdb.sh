@@ -3,13 +3,13 @@
 tmp=$(mktemp -d)
 
 pushd $tmp
-git clone git@gitlab.com:lit-codes/big.git
+git clone --single-branch --branch development --depth=1 git@gitlab.com:lit-codes/big.git
 cd big
 ./merge.sh dev-db.tgz
 popd
 
-mkdir initdb/data
-pushd initdb/data
+mkdir initdb/
+pushd initdb/
 tar xf $tmp/big/out/dev-db.tgz
 popd
 

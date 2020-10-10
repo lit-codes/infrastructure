@@ -4,7 +4,7 @@
     label="Teacher name"
     use-input
     hide-selected
-    input-debounce="500"
+    input-debounce="100"
     :options="options"
     dropdown-icon="search"
     option-label="q"
@@ -46,9 +46,9 @@ export default {
   },
   methods: {
     async filterFn (val, update, abort) {
-      const { data } = await this.$axios.get(`http://127.0.0.1:3001/search?q=${val}`)
+      const { data } = await this.$axios.get(`http://127.0.0.1:4000/search?teacher=${val}`)
       update(() => {
-        this.options = data.map(item => item._source.question)
+        this.options = data.map(t => `${t.first_name} ${t.last_name}`)
       })
     },
 

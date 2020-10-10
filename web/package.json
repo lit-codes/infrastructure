@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "node index.js",
-    "dev": "npm run serve",
-    "frontend": "cd dashboard-app; npm install; npm run build",
+    "playground": "dotenv nodemon index.js",
+    "api": "NODE_ENV=production dotenv nodemon index.js",
+    "dev": "npm run playground",
     "start": "NODE_ENV=production npm run serve"
   },
   "dependencies": {
@@ -16,5 +17,10 @@
     "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^4.0.0",
+    "nodemon": "^2.0.4",
+    "pg": "^8.4.0"
   }
 }
