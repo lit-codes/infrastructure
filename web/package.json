@@ -1,18 +1,21 @@
 {
-  "name": "cubejs-docker-demo",
+  "name": "rmp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "node index.js",
     "playground": "dotenv nodemon index.js",
     "api": "NODE_ENV=production dotenv nodemon index.js",
+    "api-dev": "NODE_ENV=development dotenv nodemon index.js",
     "dev": "npm run playground",
     "start": "NODE_ENV=production npm run serve"
   },
   "dependencies": {
-    "@cubejs-backend/postgres-driver": "^0.19.20",
-    "@cubejs-backend/server": "^0.19.21",
+    "@cubejs-backend/postgres-driver": "^0.23.11",
+    "@cubejs-backend/server": "^0.23.12",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "express-session": "^1.17.1",
     "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.1",
