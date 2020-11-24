@@ -9,9 +9,22 @@ services:
       - ./initdb:/docker-entrypoint-initdb.d/
     ports:
       - 127.0.0.1:5432:5432
-  redis:
-    image: 'redis'
+    expose:
+      - 5432
+    networks:
+      - database
+  hasura:
+    image: 'hasura/graphql-engine:latest'
+    env_file:
+      - database.env # configure postgres
+    depends_on:
+      - database
     ports:
-      - 127.0.0.1:6379:6379
+      - 127.0.0.1:8080:8080
+    networks:
+      - database
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
+
+networks:
+  database:

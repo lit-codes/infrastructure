@@ -1,51 +1,42 @@
 {
-  "name": "lit-codes",
-  "version": "0.0.1",
-  "description": "A dashboard for analysis of the RMP website",
-  "productName": "Lite Codes",
-  "author": "peymannaderi3 <peymannaderi3@yahoo.com>",
-  "private": true,
+  "name": "dashboard-app",
+  "version": "1.0.0",
+  "description": "RMP frontend application",
+  "main": "src/index.js",
   "scripts": {
-    "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0",
-    "dev": "quasar dev",
-    "build": "quasar build"
+    "start": "parcel -d rmp -p 3000 watch src/index.html",
+    "build": "NODE_ENV=production parcel -d rmp build src/index.html",
+    "style": "eslint --fix *.js",
+    "deploy": "cd rmp && now --prod -A ../now.json"
   },
+  "repository": {
+    "type": "git",
+    "url": "gitlab.com/lit-codes/rmp"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@cubejs-client/core": "^0.20.0",
-    "@quasar/extras": "^1.0.0",
-    "axios": "^0.20.0",
-    "chart.js": "^2.9.3",
-    "core-js": "^3.6.5",
-    "quasar": "^1.0.0",
-    "vue-chartjs": "^3.5.1"
+    "@cubejs-client/core": "^0.22.1",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@types/react": "^16.9.53",
+    "babel-polyfill": "^6.26.0",
+    "echarts": "^4.9.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-grid-layout": "^1.1.1",
+    "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
-    "@quasar/app": "^2.0.9",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-loader": "^3.0.3",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^6.1.2"
-  },
-  "browserslist": [
-    "last 10 Chrome versions",
-    "last 10 Firefox versions",
-    "last 4 Edge versions",
-    "last 7 Safari versions",
-    "last 8 Android versions",
-    "last 8 ChromeAndroid versions",
-    "last 8 FirefoxAndroid versions",
-    "last 10 iOS versions",
-    "last 5 Opera versions"
-  ],
-  "engines": {
-    "node": ">= 10.18.1",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "now": "^17.1.1",
+    "parcel-bundler": "^1.3.1"
   }
 }

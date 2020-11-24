@@ -2,8 +2,8 @@
 
 set -e
 
-if [ ! -d initdb/data ];then
+if [ ! -d initdb ];then
     ./initdb.sh
 fi
 
-docker-compose up
+docker-compose up $@
