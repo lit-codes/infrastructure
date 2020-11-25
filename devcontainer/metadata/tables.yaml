@@ -1,0 +1,102 @@
+- table:
+    schema: public
+    name: department
+  array_relationships:
+  - name: school_departments
+    using:
+      foreign_key_constraint_on:
+        column: department_id
+        table:
+          schema: public
+          name: school_departments
+  - name: teachers
+    using:
+      foreign_key_constraint_on:
+        column: department_id
+        table:
+          schema: public
+          name: teacher
+- table:
+    schema: public
+    name: related_teachers
+- table:
+    schema: public
+    name: school
+  array_relationships:
+  - name: school_departments
+    using:
+      foreign_key_constraint_on:
+        column: school_id
+        table:
+          schema: public
+          name: school_departments
+  - name: school_ratings
+    using:
+      foreign_key_constraint_on:
+        column: school_id
+        table:
+          schema: public
+          name: school_ratings
+  - name: teachers
+    using:
+      foreign_key_constraint_on:
+        column: school_id
+        table:
+          schema: public
+          name: teacher
+- table:
+    schema: public
+    name: school_departments
+  object_relationships:
+  - name: department
+    using:
+      foreign_key_constraint_on: department_id
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+- table:
+    schema: public
+    name: school_ratings
+  object_relationships:
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+- table:
+    schema: public
+    name: teacher
+  object_relationships:
+  - name: department
+    using:
+      foreign_key_constraint_on: department_id
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+  array_relationships:
+  - name: teacher_ratings
+    using:
+      foreign_key_constraint_on:
+        column: teacher_id
+        table:
+          schema: public
+          name: teacher_ratings
+  - name: teacher_tags
+    using:
+      foreign_key_constraint_on:
+        column: teacher_id
+        table:
+          schema: public
+          name: teacher_tags
+- table:
+    schema: public
+    name: teacher_ratings
+  object_relationships:
+  - name: teacher
+    using:
+      foreign_key_constraint_on: teacher_id
+- table:
+    schema: public
+    name: teacher_tags
+  object_relationships:
+  - name: teacher
+    using:
+      foreign_key_constraint_on: teacher_id
