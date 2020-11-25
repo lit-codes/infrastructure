@@ -7,20 +7,31 @@ services:
     volumes:
       - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
       - ./initdb:/docker-entrypoint-initdb.d/
-    ports:
-      - 127.0.0.1:5432:5432
     expose:
       - 5432
     networks:
       - database
-  hasura:
-    image: 'hasura/graphql-engine:latest'
+  hasura-migration:
+    image: 'hasura/graphql-engine:v1.3.3.cli-migrations-v2'
     env_file:
       - database.env # configure postgres
     depends_on:
       - database
+    volumes:
+      - ./metadata:/hasura-metadata
+    networks:
+      - database
+  hasura:
+    image: 'hasura/graphql-engine:v1.3.3'
+    env_file:
+      - database.env # configure postgres
+    depends_on:
+      - hasura-migration
+      - database
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:4000:8080
+    expose:
+      - 8080
     networks:
       - database
 volumes:
