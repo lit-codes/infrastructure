@@ -51,7 +51,7 @@ function Root() {
                     className="layout"
                     onLayoutChange={onLayoutChange}
                 >
-                    {charts.map((chart, id) => <div className={classes.chartContainer} key={id}><Chart {...chart} /></div>)}
+                    {charts.map((chart, id) => <div className={classes.chartContainer} key={id}><Chart chartData={chart} /></div>)}
                 </ResponsiveGridLayout>
             </Container>
         </React.Fragment>
