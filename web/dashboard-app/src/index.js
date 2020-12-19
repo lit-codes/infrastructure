@@ -36,9 +36,6 @@ const theme = createMuiTheme({
     }
 });
 
-console.error = function(...args) {
-    alert(...args);
-};
 function App(props) {
     return (
         <BrowserRouter>

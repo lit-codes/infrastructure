@@ -1,6 +1,6 @@
 export const API_URL = document.location.origin
   .replace('ui', 'api') // Theia dev servers
-  .replace('3000', '4000') // Local development
+  .replace('3000', '8080') // Local development
 
 export default class API {
     async fetch(endpoint, query) {
