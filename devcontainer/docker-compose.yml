@@ -29,7 +29,7 @@ services:
       - hasura-migration
       - database
     ports:
-      - 127.0.0.1:4000:8080
+      - 127.0.0.1:8080:8080
     expose:
       - 8080
     networks:
