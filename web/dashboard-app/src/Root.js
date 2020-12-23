@@ -15,13 +15,13 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const useStyles = makeStyles(theme => ({
     chartContainer: {
-        width: 400,
-        height: 400,
     },
 }));
 function Root() {
     const classes = useStyles();
     const [ charts, setCharts ] = useState([]);
+    const [ layouts, setLayouts ] = useState({"lg":[{"w":2,"h":1,"x":0,"y":0,"i":"0","moved":false,"static":false},{"w":2,"h":1,"x":1,"y":0,"i":"1","moved":false,"static":false}]});
+    const [ fullScreenLayouts, setFullScreenLayouts ] = useState(undefined);
     const [ api, setAPI ] = useState({});
 
     useEffect(() => {
@@ -35,9 +35,29 @@ function Root() {
             console.error('Something went wrong when trying to fetch the question, %s', e);
         }
     }
-    function onLayoutChange(layout) {
-        // Save the layout somewhere for the session 
+
+    function changeFullScreen(isFullScreen, key) {
+        const layout = layouts.lg;
+        if (isFullScreen) {
+            setFullScreenLayouts({
+                lg: [
+                    {
+                        ...(layout[0]),
+                        w: 3,
+                        h: 2,
+                    },
+                    layout[1]
+                ]
+            });
+        } else {
+            setFullScreenLayouts(undefined);
+        }
     }
+
+    function onLayoutChange(_, layouts) {
+        if (!fullScreenLayouts) setLayouts(layouts);
+    }
+
     return (
         <React.Fragment>
             <Header>
@@ -45,13 +65,15 @@ function Root() {
             </Header>
             <Container maxWidth={false}>
                 <ResponsiveGridLayout
-                    breakpoints={{lg: 1200, md: 800, sm: 600, xs: 400, xxs: 0}}
-                    cols={{lg: 4, md: 3, sm: 2, xs: 1, xxs: 1}}
-                    compactType="vertical"
-                    className="layout"
+                    breakpoints={{lg: 1080, md: 768, sm: 600, xs: 400, xxs: 0}}
+                    cols={{lg: 3, md: 3, sm: 2, xs: 1, xxs: 1}}
+                    rowHeight={400}
+                    layouts={fullScreenLayouts || layouts}
                     onLayoutChange={onLayoutChange}
                 >
-                    {charts.map((chart, id) => <div className={classes.chartContainer} key={id}><Chart chartData={chart} /></div>)}
+                    {
+                        charts.map((chart, id) => <div className={classes.chartContainer} key={id}><Chart chartData={chart} changeFullScreen={(isFullScreen) => changeFullScreen(isFullScreen, id)} /></div>)
+                    }
                 </ResponsiveGridLayout>
             </Container>
         </React.Fragment>

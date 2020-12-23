@@ -53,48 +53,57 @@ class ChartData {
             this.query = query;
         };
     }
-    async load() {
-        return {};
+    onLoad(callback) {
+        this.callback = callback;
+    }
+    reload() {
+        this.onLoad(this.callback);
     }
 }
 
 export class StackedBarChart extends ChartData {
-    async load() {
-        const data = extractXY(await this.api.query(this.query));
-        return {
-            xAxis: {
-                type: 'time',
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: Object.keys(data).map(key => {
-                return {
-                    type: 'bar',
-                    stack: 'one',
-                    data: data[key].map(t => [t.x, t.y || 1]),
-                };
-            })
-        };
+    onLoad(callback) {
+        this.callback = callback;
+        this.api.query({query: this.query}).then(({data: result}) => {
+            const data = extractXY(result);
+            callback({
+                xAxis: {
+                    type: 'time',
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: Object.keys(data).map(key => {
+                    return {
+                        type: 'bar',
+                        stack: 'one',
+                        data: data[key].map(t => [t.x, t.y || 1]),
+                    };
+                })
+            });
+        }).catch(console.error);
     }
 }
 
 export class LineChart extends ChartData {
-    async load() {
-        const data = extractXY(await this.api.query(this.query));
-        return {
-            xAxis: {
-                type: 'time',
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: Object.keys(data).map(key => {
-                return {
-                    type: 'line',
-                    data: data[key].map(t => [t.x, t.y || 1]),
-                };
-            })
-        };
+    onLoad(callback) {
+        this.callback = callback;
+        this.api.query({query: this.query}).then(({data: result}) => {
+            const data = extractXY(result);
+            callback({
+                xAxis: {
+                    type: 'time',
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: Object.keys(data).map(key => {
+                    return {
+                        type: 'line',
+                        data: data[key].map(t => [t.x, t.y || 1]),
+                    };
+                })
+            });
+        }).catch(console.error);
     }
 }

@@ -9,10 +9,13 @@ import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import GraphiQL from 'graphiql';
 import echarts from 'echarts';
 
+import API from './API';
 import { API_URL } from './API';
 
 const useStyles = makeStyles(theme => ({
@@ -42,14 +45,23 @@ const useStyles = makeStyles(theme => ({
         display: 'none',
     },
 }));
-function Chart({chartData}) {
+
+const api = new API();
+function Chart({chartData, changeFullScreen}) {
     const classes = useStyles();
     const chartRef = useRef();
     const [chart, setChart] = useState();
-    const [editing, setEditing] = useState();
+    const [data, setData] = useState();
+    const [isEditing, setIsEditing] = useState();
+    const [isFullScreen, setIsFullScreen] = useState();
 
     useEffect(() => {
-        if (editing) return;
+        chartData.onLoad((data) => {
+            setData(data);
+        });
+    }, []);
+
+    useEffect(() => {
         const chart = echarts.init(chartRef.current, 'dark', { height: 'auto', width: 'auto',});
         chart.setOption({
             textStyle: {
@@ -60,15 +72,28 @@ function Chart({chartData}) {
                 trigger: 'axis',
             },
         });
-        chart.showLoading();
-        chartData.load().then((data) => {
+        if (data) {
             chart.setOption(data);
             chart.hideLoading();
             chart.resize();
-        }).catch(console.error);
+        } else {
+            chart.showLoading();
+        }
         new ResizeObserver(() => chart.resize()).observe(chartRef.current);
         setChart(chart);
     });
+
+    function startEditing(isEditing) {
+        setIsEditing(isEditing);
+        startFullScreen(isEditing);
+        if (!isEditing) {
+            chartData.reload();
+        }
+    }
+    function startFullScreen(isFullScreen) {
+        setIsFullScreen(isFullScreen);
+        changeFullScreen(isFullScreen);
+    }
     return (
         <Paper className={classes.box} elevation={3} variant="outlined" square>
             <AppBar position="static" className={classes.header}>
@@ -78,34 +103,28 @@ function Chart({chartData}) {
                     </Typography>
                     <div className={classes.grow} />
                     {
-                        editing
-                            ? <Button color="secondary" onClick={() => setEditing(false)}><FullscreenExitIcon display="inline" fontSize="small" /></Button>
-                            : <Button color="secondary" onClick={() => setEditing(true)}><EditIcon display="inline" fontSize="small" /></Button>
+                        isEditing
+                            ? <Button color="secondary" onClick={() => startEditing(false)}><SaveIcon display="inline" fontSize="small" /></Button>
+                            : <Button color="secondary" onClick={() => startEditing(true)}><EditIcon display="inline" fontSize="small" /></Button>
+                    }
+                    {
+                        isFullScreen
+                            ? <Button color="secondary" onClick={() => startFullScreen(false)}><FullscreenExitIcon display="inline" fontSize="small" /></Button>
+                            : <Button color="secondary" onClick={() => startFullScreen(true)}><FullscreenIcon display="inline" fontSize="small" /></Button>
                     }
                 </Toolbar>
             </AppBar>
-            <div ref={chartRef} className={editing ? classes.hide : classes.chart}></div>
-            <div className={!editing ? classes.hide : classes.chart}> 
-                <GraphiQL
-                    onEditQuery={chartData.onQueryChange()}
-                    query={chartData.query}
-                    fetcher={async graphQLParams => {
-                        const data = await fetch(
-                            `${API_URL}/v1/graphql`,
-                            {
-                                method: 'POST',
-                                headers: {
-                                    Accept: 'application/json',
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify(graphQLParams),
-                                credentials: 'same-origin',
-                            },
-                        );
-                        return data.json().catch(() => data.text());
-                    }}
-                />
-            </div>
+            <div ref={chartRef} className={isEditing ? classes.hide : classes.chart}></div>
+            {
+                isEditing &&
+                <div className={classes.chart}> 
+                    <GraphiQL
+                        onEditQuery={chartData.onQueryChange()}
+                        query={chartData.query}
+                        fetcher={query => api.query(query)}
+                    />
+                </div>
+            }
         </Paper>
     );
 }
