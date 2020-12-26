@@ -6,22 +6,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export const questionsList = [
     {
-        title: 'What does the overall ratings of a teacher look like?',
-        id: 'OverallRatings',
-    },
-    {
-        title: 'Who are the most helpful teachers?',
-        id: 'MostHelpfulTeachers',
-    },
-    {
         title: 'How the teacher ratings have changed over time?',
         id: 'RatingsOverTime',
     },
 ];
 
 const questionToModule = {
-    OverallRatings: import('./OverallRatings'),
-    MostHelpfulTeachers: import('./MostHelpfulTeacher'),
     RatingsOverTime: import('./RatingsOverTime'),
 };
 

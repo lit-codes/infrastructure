@@ -41,12 +41,20 @@ function Root() {
         if (isFullScreen) {
             setFullScreenLayouts({
                 lg: [
-                    {
-                        ...(layout[0]),
-                        w: 3,
-                        h: 2,
-                    },
-                    layout[1]
+                    ...layout.map((config, i) => {
+                        if (key === i) return {
+                            ...config,
+                            x: 0,
+                            y: 0,
+                            w: 3,
+                            h: 2,
+                        };
+                        if (config.y === 0) return {
+                            ...config,
+                            y: 1,
+                        };
+                        return config;
+                    })
                 ]
             });
         } else {
@@ -70,6 +78,7 @@ function Root() {
                     rowHeight={400}
                     layouts={fullScreenLayouts || layouts}
                     onLayoutChange={onLayoutChange}
+                    isDraggable={!fullScreenLayouts}
                 >
                     {
                         charts.map((chart, id) => <div className={classes.chartContainer} key={id}><Chart chartData={chart} changeFullScreen={(isFullScreen) => changeFullScreen(isFullScreen, id)} /></div>)

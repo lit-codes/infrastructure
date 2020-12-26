@@ -1,4 +1,4 @@
-import { StackedBarChart, LineChart } from '../Charts';
+import ChartData from '../../ChartData';
 
 export default class RatingsOverTime {
     constructor(api) {
@@ -6,26 +6,43 @@ export default class RatingsOverTime {
     }
     get charts() {
         return [
-            new LineChart({
+            new ChartData({
+                config: {
+                    type: 'bar',
+                },
                 api: this.api,
                 title: '# Ratings over time',
                 query: `
 {
-  values: teacher_ratings (where: {teacher_id: {_eq: 407}}){
+  difficulty: teacher_ratings(
+    where: {teacher_id: {_eq: 407}}
+    order_by: {timestamp: asc}
+  ) {
     x: timestamp
+    y: difficulty
   }
 }
                 `,
             }),
-            new StackedBarChart({
+            new ChartData({
                 api: this.api,
+                config: {
+                    isStacked: true,
+                    type: 'bar',
+                },
                 title: '# Ratings good vs. bad',
                 query: `
 {
-  hard: teacher_ratings(where: {_and:[{teacher_id:{_eq: 407}},{difficulty:{_gt:3}}] }) {
+  hard: teacher_ratings(
+    order_by: {timestamp: asc}
+    where: {_and: [{teacher_id: {_eq: 407}}, {difficulty: {_gt: 3}}]}
+  ) {
     x: timestamp
   }
-  easy: teacher_ratings(where: {_and:[{teacher_id:{_eq: 407}},{difficulty:{_lte:3}}] }) {
+  easy: teacher_ratings(
+    order_by: {timestamp: asc}
+    where: {_and: [{teacher_id: {_eq: 407}}, {difficulty: {_lte: 3}}]}
+  ) {
     x: timestamp
   }
 }
