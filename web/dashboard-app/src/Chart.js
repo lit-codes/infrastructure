@@ -5,6 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Box from '@material-ui/core/Box';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
@@ -41,8 +44,20 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         height: 'calc(100% - 48px)',
     },
-    hide: {
-        display: 'none',
+    smallChart: {
+        width: '100%',
+        height: 'calc(25% - 48px)',
+    },
+    editor: {
+        width: '100%',
+        height: '70%',
+    },
+    chartSelector: {
+        width: '100%',
+        height: '5%',
+    },
+    topButton: {
+        minWidth: '44px',
     },
 }));
 
@@ -52,11 +67,10 @@ function Chart({chartData, changeFullScreen}) {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [data, setData] = useState();
-    const [isEditing, setIsEditing] = useState();
-    const [isFullScreen, setIsFullScreen] = useState();
+    const [config, setConfig] = useState({isEditing: false, isFullScreen: false});
 
     useEffect(() => {
-        chartData.onLoad((data) => {
+        chartData.onDataChange((data) => {
             setData(data);
         });
     }, []);
@@ -73,6 +87,7 @@ function Chart({chartData, changeFullScreen}) {
             },
         });
         if (data) {
+            chart.clear();
             chart.setOption(data);
             chart.hideLoading();
             chart.resize();
@@ -84,15 +99,45 @@ function Chart({chartData, changeFullScreen}) {
     });
 
     function startEditing(isEditing) {
-        setIsEditing(isEditing);
-        startFullScreen(isEditing);
-        if (!isEditing) {
-            chartData.reload();
-        }
+        const extraArgs = isEditing ? { existingChart: { query: chartData.query, config: chartData.config } } : {};
+        setConfig({
+            ...config,
+            isEditing,
+            isFullScreen: isEditing,
+            ...extraArgs,
+        });
+        changeFullScreen(isEditing);
     }
-    function startFullScreen(isFullScreen) {
-        setIsFullScreen(isFullScreen);
+    function cancelEditing() {
+        configChart(config.existingChart);
+        setConfig({
+            ...config,
+            isEditing: false,
+            isFullScreen: false,
+        });
+    }
+    function setFullScreen(isFullScreen) {
+        if (config.isEditing && !isFullScreen) {
+            cancelEditing();
+        } else {
+            setConfig({
+                ...config,
+                isFullScreen,
+            });
+        }
         changeFullScreen(isFullScreen);
+    }
+    function configChart(options) {
+        const existingOptions = {
+            config: chartData.config,
+            query: chartData.query,
+        };
+        try {
+            chartData.update(options);
+        } catch(e) {
+            console.error('unable to set chart config', e);
+            chartData.update(config.existingChart);
+        }
     }
     return (
         <Paper className={classes.box} elevation={3} variant="outlined" square>
@@ -103,25 +148,56 @@ function Chart({chartData, changeFullScreen}) {
                     </Typography>
                     <div className={classes.grow} />
                     {
-                        isEditing
-                            ? <Button color="secondary" onClick={() => startEditing(false)}><SaveIcon display="inline" fontSize="small" /></Button>
-                            : <Button color="secondary" onClick={() => startEditing(true)}><EditIcon display="inline" fontSize="small" /></Button>
+                        config.isEditing
+                            ? <Button className={classes.topButton} color="secondary" onClick={() => startEditing(false)}><SaveIcon display="inline" fontSize="small" /></Button>
+                            : <Button className={classes.topButton} color="secondary" onClick={() => startEditing(true)}><EditIcon display="inline" fontSize="small" /></Button>
                     }
                     {
-                        isFullScreen
-                            ? <Button color="secondary" onClick={() => startFullScreen(false)}><FullscreenExitIcon display="inline" fontSize="small" /></Button>
-                            : <Button color="secondary" onClick={() => startFullScreen(true)}><FullscreenIcon display="inline" fontSize="small" /></Button>
+                        config.isFullScreen
+                            ? <Button className={classes.topButton} color="secondary" onClick={() => setFullScreen(false)}><FullscreenExitIcon display="inline" fontSize="small" /></Button>
+                            : <Button className={classes.topButton} color="secondary" onClick={() => setFullScreen(true)}><FullscreenIcon display="inline" fontSize="small" /></Button>
                     }
                 </Toolbar>
             </AppBar>
-            <div ref={chartRef} className={isEditing ? classes.hide : classes.chart}></div>
             {
-                isEditing &&
-                <div className={classes.chart}> 
+                config.isEditing &&
+                    <Box className={classes.chartSelector} display="flex" justifyContent="start">
+                        <ToggleButtonGroup
+                            value={chartData.config.type}
+                            exclusive
+                            onChange={(_, type) => configChart({config: {type}})}
+                        >
+                            <ToggleButton value="line"> line </ToggleButton>
+                            <ToggleButton value="bar"> bar </ToggleButton>
+                            <ToggleButton value="scatter"> scatter </ToggleButton>
+                            <ToggleButton value="pie"> pie </ToggleButton>
+                        </ToggleButtonGroup>
+                        {
+                        ['line', 'bar', 'scatter'].includes(chartData.config.type) && <ToggleButtonGroup
+                            value={[chartData.config.isStacked && 'stacked']}
+                            onChange={(_, values) => configChart({config: { isStacked: values.includes('stacked')}})}
+                        >
+                            <ToggleButton value="stacked"> Stacked? </ToggleButton>
+                        </ToggleButtonGroup>
+                        }
+                    </Box>
+            }
+            <div ref={chartRef} className={config.isEditing ? classes.smallChart : classes.chart}></div>
+            {
+                config.isEditing &&
+                <div className={classes.editor}> 
                     <GraphiQL
-                        onEditQuery={chartData.onQueryChange()}
-                        query={chartData.query}
-                        fetcher={query => api.query(query)}
+                        onEditQuery={query => chartData.onQueryChange(query)}
+                        query={chartData.query.trim()}
+                        fetcher={async query => {
+                            const data = await api.query(query);
+                            try {
+                                if (!data.data.__schema) chartData.updateData(data);
+                            } catch(e) {
+                                console.error('unable to set chart result', e);
+                            }
+                            return data;
+                        }}
                     />
                 </div>
             }
