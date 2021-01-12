@@ -90,10 +90,11 @@ const transformers = {
 };
 
 export default class ChartData {
-    constructor({config, title, query, api}) {
+    constructor({config, title, query, variables, api}) {
         this.config = config;
         this.title = title;
         this.query = query;
+        this.variables = variables;
         this.api = api;
     }
     update({config, query}) {
@@ -107,12 +108,15 @@ export default class ChartData {
     onQueryChange(query) {
         this.query = query;
     }
+    onVariablesChange(variables) {
+        this.variables = JSON.parse(variables);
+    }
     onDataChange(callback) {
         this.callback = callback;
         this.requestData().then(result => this.updateData(result)).catch(console.error);
     }
     requestData() {
-        return this.api.query({query: this.query});
+        return this.api.query({query: this.query, variables: this.variables});
     }
     reload() {
         this.onDataChange(this.callback);

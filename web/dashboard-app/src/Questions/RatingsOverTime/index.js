@@ -5,6 +5,7 @@ export default class RatingsOverTime {
         this.api = api;
     }
     get charts() {
+        // TODO: Add full name search https://hasura.io/blog/full-text-search-with-hasura-graphql-api-postgres/
         return [
             new ChartData({
                 config: {
@@ -13,16 +14,21 @@ export default class RatingsOverTime {
                 api: this.api,
                 title: '# Ratings over time',
                 query: `
-{
-  difficulty: teacher_ratings(
-    where: {teacher_id: {_eq: 407}}
-    order_by: {timestamp: asc}
+query ($first_name: String, $last_name: String) {
+  teacher(
+    where: {_and: [{first_name: {_ilike: $first_name}}, {last_name: {_ilike: $last_name}}]}
   ) {
-    x: timestamp
-    y: difficulty
+    difficulty: teacher_ratings(order_by: {timestamp: asc}) {
+      x: timestamp
+      y: difficulty
+    }
   }
 }
                 `,
+                variables: {
+                    first_name: 'Penny',
+                    last_name: 'Avery',
+                },
             }),
             new ChartData({
                 api: this.api,
