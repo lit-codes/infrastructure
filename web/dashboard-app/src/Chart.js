@@ -188,7 +188,9 @@ function Chart({chartData, changeFullScreen}) {
                 <div className={classes.editor}> 
                     <GraphiQL
                         onEditQuery={query => chartData.onQueryChange(query)}
+                        onEditVariables={variables => chartData.onVariablesChange(variables)}
                         query={chartData.query.trim()}
+                        variables={JSON.stringify(chartData.variables)}
                         fetcher={async query => {
                             const data = await api.query(query);
                             try {
