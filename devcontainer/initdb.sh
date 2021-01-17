@@ -3,14 +3,12 @@
 tmp=$(mktemp -d)
 
 pushd $tmp
-git clone --single-branch --branch development --depth=1 git@gitlab.com:lit-codes/big.git
-cd big
-./merge.sh dev-db.tgz
+aws s3 cp s3://rmp-data/dev-db.tgz .
 popd
 
 mkdir initdb/
 pushd initdb/
-tar xf $tmp/big/out/dev-db.tgz
+tar xf $tmp/dev-db.tgz
 popd
 
 rm -rf $tmp
