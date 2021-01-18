@@ -10,13 +10,36 @@
         });
     }
     
-    export default function TeacherSelector({api, onChange}) {
+    export default function TeacherSelector({api, onChange, teacherId}) {
         const [open, setOpen] = React.useState(false);
         const [options, setOptions] = React.useState([{name: 'Penny Avery', id: 407}]);
         const [ value, setValue ] = React.useState({name: 'Penny Avery', id: 407});
         const [inputValue, setInputValue] = React.useState('');
         const loading = open && options.length === 0;
         
+        React.useEffect(() => {
+            if (teacherId && api) {
+                api.query({query: `
+                {
+                    teacher(
+                        where: {id: {_eq: ${teacherId}}}
+                        ) {
+                            id
+                            first_name
+                            last_name
+                        }
+                    }
+                    `}).then(response => {
+                        if (response.data) {
+                            const options = response.data.teacher.map((t) => ({name: `${t.first_name} ${t.last_name}`, id: t.id}));
+                            setOptions(options);
+                            setValue(options[0]);
+                            onValueChange(undefined, options[0]);    
+                        }
+                    });
+            }
+        }, [teacherId, api])
+
         function onValueChange(_, value) {
             setValue(value);
             onChange(_, value);

@@ -31,19 +31,32 @@ function Root() {
         setAPI(new API());
     }, []);
 
+    const hash = document.location.hash.split('#')[1];
+
+    const questionId = question ? question.id : hash.split('/')[0];
+    const teacherId = teacher ? teacher.id : hash.split('/')[1];
+
     useEffect(() => {
-        if (!(question && teacher)) return;
+        if (!(questionId && teacher)) return;
         (async () => {
             try {
-                setCharts(await loadCharts(api, question.id, teacher));
+                setCharts(await loadCharts(api, questionId, teacher));
             } catch(e) {
                 console.error('Something went wrong when trying to fetch the question, %s', e);
             }
         })();
-    }, [question, teacher]);
+    }, [questionId, teacher]);
 
     function onQuestionChange(element, question) {
+        document.location.hash = `${questionId}/${teacherId}`;
         setQuestion(question);
+    }
+
+    function onTeacherChange(_, teacher) {
+        document.location.hash = `${questionId}/${teacherId}`;
+        if (teacher) {
+            setTeacher(teacher);
+        }
     }
 
     function changeFullScreen(isFullScreen, key) {
@@ -76,16 +89,11 @@ function Root() {
         if (!fullScreenLayouts) setLayouts(layouts);
     }
 
-    function onTeacherChange(_, teacher) {
-        if (teacher) {
-            setTeacher(teacher)
-        }
-    }
     return (
         <React.Fragment>
             <Header>
-                <TeacherSelector api={api} onChange={onTeacherChange} />
-                <Questions onQuestionChange={onQuestionChange} />
+                <TeacherSelector api={api} onChange={onTeacherChange} teacherId={teacherId} />
+                <Questions onQuestionChange={onQuestionChange} questionId={questionId}/>
             </Header>
             <Container maxWidth={false}>
                 <ResponsiveGridLayout
