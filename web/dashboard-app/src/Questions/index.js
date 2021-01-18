@@ -23,7 +23,7 @@ export default function Questions({ onQuestionChange }) {
 
     return (
         <Autocomplete
-            id="combo-box-demo"
+            id="questions-selector"
             options={questionsList}
             getOptionLabel={(option) => option.title}
             style={{ width: 300 }}
@@ -33,6 +33,6 @@ export default function Questions({ onQuestionChange }) {
     );
 }
 
-export async function loadCharts(api, question) {
-    return questionToModule[question].then(question => (new question.default(api)).charts);
+export async function loadCharts(api, question, teacher) {
+    return questionToModule[question].then(question => (new question.default(api, teacher)).charts);
 }

@@ -1,4 +1,4 @@
-/* React */
+    /* React */
 import React, { useState, useEffect } from 'react';
 /* Material UI Components */
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,6 +9,7 @@ import Chart from './Chart';
 import Header from './Header';
 import { loadCharts } from './Questions';
 import Questions from './Questions';
+import TeacherSelector from './TeacherSelector';
 import API from './API';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -22,18 +23,27 @@ function Root() {
     const [ charts, setCharts ] = useState([]);
     const [ layouts, setLayouts ] = useState({"lg":[{"w":2,"h":1,"x":0,"y":0,"i":"0","moved":false,"static":false},{"w":2,"h":1,"x":1,"y":0,"i":"1","moved":false,"static":false}]});
     const [ fullScreenLayouts, setFullScreenLayouts ] = useState(undefined);
-    const [ api, setAPI ] = useState({});
+    const [ question, setQuestion ] = useState();
+    const [ teacher, setTeacher ] = useState();
+    const [ api, setAPI ] = useState();
 
     useEffect(() => {
         setAPI(new API());
     }, []);
 
-    async function onQuestionChange(element, question) {
-        try {
-            setCharts(await loadCharts(api, question.id));
-        } catch(e) {
-            console.error('Something went wrong when trying to fetch the question, %s', e);
-        }
+    useEffect(() => {
+        if (!(question && teacher)) return;
+        (async () => {
+            try {
+                setCharts(await loadCharts(api, question.id, teacher));
+            } catch(e) {
+                console.error('Something went wrong when trying to fetch the question, %s', e);
+            }
+        })();
+    }, [question, teacher]);
+
+    function onQuestionChange(element, question) {
+        setQuestion(question);
     }
 
     function changeFullScreen(isFullScreen, key) {
@@ -66,9 +76,15 @@ function Root() {
         if (!fullScreenLayouts) setLayouts(layouts);
     }
 
+    function onTeacherChange(_, teacher) {
+        if (teacher) {
+            setTeacher(teacher)
+        }
+    }
     return (
         <React.Fragment>
             <Header>
+                <TeacherSelector api={api} onChange={onTeacherChange} />
                 <Questions onQuestionChange={onQuestionChange} />
             </Header>
             <Container maxWidth={false}>

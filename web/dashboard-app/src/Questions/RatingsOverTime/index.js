@@ -1,22 +1,22 @@
 import ChartData from '../../ChartData';
 
 export default class RatingsOverTime {
-    constructor(api) {
+    constructor(api, teacher) {
         this.api = api;
+        this.teacher = teacher;
     }
     get charts() {
-        // TODO: Add full name search https://hasura.io/blog/full-text-search-with-hasura-graphql-api-postgres/
         return [
             new ChartData({
                 config: {
                     type: 'bar',
                 },
                 api: this.api,
-                title: '# Ratings over time',
+                title: `# Ratings over time - ${this.teacher.name}`,
                 query: `
-query ($first_name: String, $last_name: String) {
+query {
   teacher(
-    where: {_and: [{first_name: {_ilike: $first_name}}, {last_name: {_ilike: $last_name}}]}
+    where: {id: {_eq: ${this.teacher.id}}}
   ) {
     difficulty: teacher_ratings(order_by: {timestamp: asc}) {
       x: timestamp
@@ -25,10 +25,6 @@ query ($first_name: String, $last_name: String) {
   }
 }
                 `,
-                variables: {
-                    first_name: 'Penny',
-                    last_name: 'Avery',
-                },
             }),
             new ChartData({
                 api: this.api,
@@ -36,18 +32,18 @@ query ($first_name: String, $last_name: String) {
                     isStacked: true,
                     type: 'bar',
                 },
-                title: '# Ratings good vs. bad',
+                title: `# Ratings good vs. bad - ${this.teacher.name}`,
                 query: `
 {
   hard: teacher_ratings(
     order_by: {timestamp: asc}
-    where: {_and: [{teacher_id: {_eq: 407}}, {difficulty: {_gt: 3}}]}
+    where: {_and: [{teacher_id: {_eq: ${this.teacher.id}}}, {difficulty: {_gt: 3}}]}
   ) {
     x: timestamp
   }
   easy: teacher_ratings(
     order_by: {timestamp: asc}
-    where: {_and: [{teacher_id: {_eq: 407}}, {difficulty: {_lte: 3}}]}
+    where: {_and: [{teacher_id: {_eq: ${this.teacher.id}}}, {difficulty: {_lte: 3}}]}
   ) {
     x: timestamp
   }
