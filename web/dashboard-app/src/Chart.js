@@ -73,7 +73,7 @@ function Chart({chartData, changeFullScreen}) {
         chartData.onDataChange((data) => {
             setData(data);
         });
-    }, []);
+    }, [chartData]);
 
     useEffect(() => {
         const chart = echarts.init(chartRef.current, 'dark', { height: 'auto', width: 'auto',});

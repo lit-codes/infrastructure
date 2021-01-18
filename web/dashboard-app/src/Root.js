@@ -1,4 +1,4 @@
-/* React */
+    /* React */
 import React, { useState, useEffect } from 'react';
 /* Material UI Components */
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,6 +9,7 @@ import Chart from './Chart';
 import Header from './Header';
 import { loadCharts } from './Questions';
 import Questions from './Questions';
+import TeacherSelector from './TeacherSelector';
 import API from './API';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -22,17 +23,39 @@ function Root() {
     const [ charts, setCharts ] = useState([]);
     const [ layouts, setLayouts ] = useState({"lg":[{"w":2,"h":1,"x":0,"y":0,"i":"0","moved":false,"static":false},{"w":2,"h":1,"x":1,"y":0,"i":"1","moved":false,"static":false}]});
     const [ fullScreenLayouts, setFullScreenLayouts ] = useState(undefined);
-    const [ api, setAPI ] = useState({});
+    const [ question, setQuestion ] = useState();
+    const [ teacher, setTeacher ] = useState();
+    const [ api, setAPI ] = useState();
 
     useEffect(() => {
         setAPI(new API());
     }, []);
 
-    async function onQuestionChange(element, question) {
-        try {
-            setCharts(await loadCharts(api, question.id));
-        } catch(e) {
-            console.error('Something went wrong when trying to fetch the question, %s', e);
+    const hash = document.location.hash.split('#')[1];
+
+    const questionId = question ? question.id : hash.split('/')[0];
+    const teacherId = teacher ? teacher.id : hash.split('/')[1];
+
+    useEffect(() => {
+        if (!(questionId && teacher)) return;
+        (async () => {
+            try {
+                setCharts(await loadCharts(api, questionId, teacher));
+            } catch(e) {
+                console.error('Something went wrong when trying to fetch the question, %s', e);
+            }
+        })();
+    }, [questionId, teacher]);
+
+    function onQuestionChange(element, question) {
+        document.location.hash = `${questionId}/${teacherId}`;
+        setQuestion(question);
+    }
+
+    function onTeacherChange(_, teacher) {
+        document.location.hash = `${questionId}/${teacherId}`;
+        if (teacher) {
+            setTeacher(teacher);
         }
     }
 
@@ -69,7 +92,8 @@ function Root() {
     return (
         <React.Fragment>
             <Header>
-                <Questions onQuestionChange={onQuestionChange} />
+                <TeacherSelector api={api} onChange={onTeacherChange} teacherId={teacherId} />
+                <Questions onQuestionChange={onQuestionChange} questionId={questionId}/>
             </Header>
             <Container maxWidth={false}>
                 <ResponsiveGridLayout
