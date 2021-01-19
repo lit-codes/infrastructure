@@ -9,10 +9,15 @@ export const questionsList = [
         title: 'How the teacher ratings have changed over time?',
         id: 'ratings-over-time',
     },
+    {
+        title: 'How the difficulty of the ratings correlate with the clarity?',
+        id: 'difficulty-vs-clarity',
+    },
 ];
 
 const questionToModule = {
     'ratings-over-time': import('./RatingsOverTime'),
+    'difficulty-vs-clarity': import('./DifficultyVsClarity'),
 };
 
 const useStyles = makeStyles((theme) => ({

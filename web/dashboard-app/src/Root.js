@@ -48,12 +48,12 @@ function Root() {
     }, [questionId, teacher]);
 
     function onQuestionChange(element, question) {
-        document.location.hash = `${questionId}/${teacherId}`;
+        document.location.hash = `${question.id}/${teacherId}`;
         setQuestion(question);
     }
 
     function onTeacherChange(_, teacher) {
-        document.location.hash = `${questionId}/${teacherId}`;
+        document.location.hash = `${questionId}/${teacher.id}`;
         if (teacher) {
             setTeacher(teacher);
         }
