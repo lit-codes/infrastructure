@@ -55,7 +55,8 @@
                 teacher(
                     where: {_or: [{first_name: {_ilike: "${first_name}%"}}${
                         last_name ? `, {last_name: {_ilike: "${last_name}%"}}` : ''
-                    }]}
+                    }]},
+                    limit: 10
                     ) {
                         id
                         first_name
