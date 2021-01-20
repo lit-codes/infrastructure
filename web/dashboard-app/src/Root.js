@@ -31,7 +31,11 @@ function Root() {
         setAPI(new API());
     }, []);
 
-    const hash = document.location.hash.split('#')[1];
+    let hash = document.location.hash;
+    if (!hash.match(/#\w*\/\d*/)) {
+        hash = '#ratings-over-time/407';
+    }
+    hash = hash.split('#')[1];
 
     const questionId = question ? question.id : hash.split('/')[0];
     const teacherId = teacher ? teacher.id : hash.split('/')[1];
