@@ -30,8 +30,8 @@ merge request:
 7. When you push to your branch, you will see a link under `To create a merge
    request for [branch name], visit:`, open it in your browser to create the
    merge request
-8. Make sure two options are selected:
-  - [x] Delete source branch when merge request is accepted.
-  - [x] Squash commits when merge request is accepted.
+8. Make sure these two options are selected in your fork settings:
+  - [x] `Automatically delete head branches`
+  - [x] `Allow squash merging` (and untick the other options to set this as default)
 9. Remember to add the PR to the Trello card you're working on, if there isn't
    any, create one!
