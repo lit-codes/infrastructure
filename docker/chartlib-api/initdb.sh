@@ -6,7 +6,7 @@ echo 'Downloading the development database files...'
 curl -so $tmp/dev-db.tgz https://rmp-data-dev.s3-ap-southeast-1.amazonaws.com/dev-db.tgz
 
 mkdir initdb/
-cp ../database/schema.sql initdb/0_schema.sql
+cp ../../database/schema.sql initdb/0_schema.sql
 cp init.sql initdb/1_init.sql
 pushd initdb/
 tar xf $tmp/dev-db.tgz
