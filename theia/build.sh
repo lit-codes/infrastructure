@@ -1,1 +1,1 @@
-../docker/build.sh litcodes/theia
+docker build -t litcodes/theia .

@@ -16,11 +16,6 @@ Kubernetes configs are inside the `k8s` folder. See [k8s README](k8s/README.md)
 
 The files that we use to run our applications on docker/docker swarm.
 
-# Docker tools
-
-Contains the Docker helpers to be used mostly in k8s projects. See
-[Docker README](docker/README.md)
-
 # Contribution
 
 Decided to help us improving our system? Great! Here's how you can create a
