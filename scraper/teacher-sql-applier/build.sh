@@ -1,1 +1,1 @@
-../../docker/build.sh litcodes/teacher-sql-applier
+../../docker-tools/build.sh litcodes/teacher-sql-applier

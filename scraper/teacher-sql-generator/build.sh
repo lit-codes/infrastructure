@@ -1,1 +1,1 @@
-../../docker/build.sh litcodes/teacher-sql-generator
+../../docker-tools/build.sh litcodes/teacher-sql-generator
