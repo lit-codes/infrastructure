@@ -2,6 +2,8 @@
 
 This is a repo that contains IaC that is used to create our servers.
 
+**Important note:** There are secrets in this repository, but they are not used anywhere.
+
 # Ansible
 
 Is used to configure individual servers using Ansible.
