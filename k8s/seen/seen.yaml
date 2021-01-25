@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: read-receipt
+  name: seen
 spec:
   replicas: 4
   strategy:
@@ -12,17 +12,17 @@ spec:
       maxUnavailable: 25%
   selector:
     matchLabels:
-      app: read-receipt
+      app: seen
   template:
     metadata:
       labels:
-        app: read-receipt
+        app: seen
     spec:
       nodeSelector:
         kubernetes.io/arch: amd64
       containers:
-        - name: read-receipt
-          image: marashisamin/read-receipt:{{TAG}}
+        - name: seen
+          image: marashisamin/seen:{{TAG}}
           imagePullPolicy: "Always"
           readinessProbe:
             httpGet:
@@ -35,28 +35,28 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: read-receipt-db
+              value: seen-db
             - name: DB_PORT
               value: '5432'
             - name: DB_NAME
-              value: read-receipt
+              value: seen
             - name: DB_USER
-              value: read-receipt
+              value: seen
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: read-receipt-secret
+                  name: seen-secret
                   key: dbpass
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: read-receipt
+  name: seen
   labels:
-    app: read-receipt
+    app: seen
 spec:
   ports:
   - port: 8080
     protocol: TCP
   selector:
-    app: read-receipt
+    app: seen
