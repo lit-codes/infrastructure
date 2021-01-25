@@ -4,7 +4,12 @@ kind: Deployment
 metadata:
   name: read-receipt
 spec:
-  replicas: 1
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       app: read-receipt
@@ -14,10 +19,10 @@ spec:
         app: read-receipt
     spec:
       nodeSelector:
-        role: worker-lg
+        kubernetes.io/arch: amd64
       containers:
         - name: read-receipt
-          image: marashisamin/read-receipt
+          image: marashisamin/read-receipt:{{TAG}}
           imagePullPolicy: "Always"
           readinessProbe:
             httpGet:

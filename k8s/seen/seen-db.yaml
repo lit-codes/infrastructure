@@ -58,16 +58,3 @@ spec:
     protocol: TCP
   selector:
     app: read-receipt-db
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: read-receipt-db-pvc
-  namespace: default
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 9Gi
